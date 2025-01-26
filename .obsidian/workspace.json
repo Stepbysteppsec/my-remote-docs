@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "cs144.md",
+                "file": "english learning.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "cs144"
+              "title": "english learning"
             }
           },
           {
@@ -201,8 +201,9 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "8f15b3a821231390",
+  "active": "c024d1983d37ef44",
   "lastOpenFiles": [
+    "cs144.md",
     "Pasted image 20250112230731.png",
     "Pasted image 20250112230832.png",
     "121736694417_.pic 1.jpg",
@@ -212,7 +213,6 @@
     "摄影艺术全套.md",
     "Welcome.md",
     "english learning.md",
-    "cs144.md",
     "README.md",
     "hello  the future.md",
     "dfs.md",
