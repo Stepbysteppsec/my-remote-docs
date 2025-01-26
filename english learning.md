@@ -262,5 +262,3 @@ the server is overwhelmed 服务器不堪重负
 - 例如：
   - *The professor’s introduction whetted the students’ appetite for the course.*（教授的引言激起了学生们对这门课程的兴趣。）
 
--
-
