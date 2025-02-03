@@ -446,3 +446,23 @@ the server is overwhelmed 服务器不堪重负
 - **含义**：“将…… 置于突出位置；使…… 成为关注焦点”，强调突出某个事物的重要性或引起人们对它的关注。
 - **例句**：The campaign aims to bring environmental protection to the forefront of public awareness.（这场运动旨在使环境保护成为公众关注的焦点。）
 - **原文语境**：“One of the features of this textbook is that it brings network security issues to the forefront.” 这本教材的特点之一就是将网络安全问题置于突出位置
+
+
+### whet one's appetite
+
+  
+
+- **含义**：“激起某人的兴趣；使某人产生欲望”，通常用于描述某种事物引起了人们对更多相关内容的兴趣或渴望。
+- **例句**：The movie trailer whetted my appetite for the full film.（电影预告片激起了我想看完整部电影的欲望。）
+- **原文语境**：“This will whet our appetite for more substantial discussions in the upcoming chapters.” 这将激发我们对后续章节中更深入讨论的兴趣。
+
+substantial
+
+大量的
+
+英 [səbˈstænʃ(ə)l]
+
+美 [səbˈstænʃ(ə)l]
+
+adj.大量的，价值巨大的；牢固的，结实的；基本的，实质性的；（饭菜）丰盛的；重要的，真实的；有地位的，富有的
+
