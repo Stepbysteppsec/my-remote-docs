@@ -423,3 +423,26 @@ the server is overwhelmed 服务器不堪重负
 1. **“without bound”**：想象一个气球不断膨胀，没有边界（boundary），表示“无限增长”。
 2. **“outbound”**：想象一辆车从某个地点出发（out），前往（bound）另一个地方，表示“向外”或“出站”。
 
+### wreak havoc
+
+  
+
+- **含义**：“造成严重破坏；引起大混乱”，强调对某个事物或情况造成极大的破坏或混乱。
+- **例句**：The earthquake wreaked havoc on the city.（地震给这座城市造成了严重破坏。）
+- **原文语境**：“But behind all this utility and excitement, there is a dark side, a side where “bad guys” attempt to wreak havoc in our daily lives...” 但在所有这些实用性和令人兴奋的表象背后，存在着阴暗的一面，在这一面，“不法分子” 试图扰乱我们的日常生活……
+
+###  be immune to
+
+  
+
+- **含义**：“对…… 免疫；不受…… 影响”，常用于描述人或事物具有抵抗某种不良影响或攻击的能力。
+- **例句**：This new type of material is immune to rust.（这种新型材料不会生锈。）
+- **原文语境**：“... design new architectures that are immune to such attacks in the first place.” 从一开始就设计出能够抵御此类攻击的新架构。
+
+### bring... to the forefront
+
+  
+
+- **含义**：“将…… 置于突出位置；使…… 成为关注焦点”，强调突出某个事物的重要性或引起人们对它的关注。
+- **例句**：The campaign aims to bring environmental protection to the forefront of public awareness.（这场运动旨在使环境保护成为公众关注的焦点。）
+- **原文语境**：“One of the features of this textbook is that it brings network security issues to the forefront.” 这本教材的特点之一就是将网络安全问题置于突出位置
