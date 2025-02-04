@@ -22,18 +22,6 @@
             }
           },
           {
-            "id": "ebab1c45d2d133a3",
-            "type": "leaf",
-            "state": {
-              "type": "release-notes",
-              "state": {
-                "currentVersion": "1.8.4"
-              },
-              "icon": "lucide-book-up",
-              "title": "Release Notes 1.8.4"
-            }
-          },
-          {
             "id": "032537f8799011f6",
             "type": "leaf",
             "state": {
@@ -61,8 +49,7 @@
               "title": "hello  the future"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -215,7 +202,7 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "ebab1c45d2d133a3",
+  "active": "c024d1983d37ef44",
   "lastOpenFiles": [
     "cs144.md",
     "Pasted image 20250112230731.png",
