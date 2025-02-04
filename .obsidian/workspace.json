@@ -22,6 +22,18 @@
             }
           },
           {
+            "id": "ebab1c45d2d133a3",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.8.4"
+              },
+              "icon": "lucide-book-up",
+              "title": "Release Notes 1.8.4"
+            }
+          },
+          {
             "id": "032537f8799011f6",
             "type": "leaf",
             "state": {
@@ -49,7 +61,8 @@
               "title": "hello  the future"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -68,7 +81,8 @@
             "state": {
               "type": "file-explorer",
               "state": {
-                "sortOrder": "alphabetical"
+                "sortOrder": "alphabetical",
+                "autoReveal": false
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -201,7 +215,7 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "c024d1983d37ef44",
+  "active": "ebab1c45d2d133a3",
   "lastOpenFiles": [
     "cs144.md",
     "Pasted image 20250112230731.png",
