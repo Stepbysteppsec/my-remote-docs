@@ -478,3 +478,7 @@ cripple
 n.瘸子，残疾人；感情残废者，感情有缺陷的人
 
 v.使残疾，使成为跛子；使（心理上或情感上）出现问题；严重损坏，严重削弱
+
+
+**英文**：Imagine the unsuspecting receiver (say an Internet router) who receives such a packet, takes the (false) source address as being truthful, and then performs some command embedded in the packet’s contents (say modifies its forwarding table).  
+**翻译**：想象一下毫无防备的接收者（比如说一个互联网路由器），它接收到这样一个数据包，把（虚假的）源地址当作真实的，然后执行嵌入在数据包内容中的某些命令（比如说修改其转发表）。
