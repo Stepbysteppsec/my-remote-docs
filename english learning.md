@@ -488,3 +488,5 @@ v.使残疾，使成为跛子；使（心理上或情感上）出现问题；严
 
 
 be orders of magnitude higher 高几个数量级
+
+do the trick" means "达到目的" or "起作用"
