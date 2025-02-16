@@ -492,4 +492,10 @@ be orders of magnitude higher 高几个数量级
 do the trick" means "达到目的" or "起作用"
 
 
- 
+ you have probably noticed extended URLs of this sort。
+ 你可能已经留意到过这类加长的 URL 。
+he server responds with the entire set of IP addresses, but rotates the ordering of the addresses within each reply.
+但每次回复时会改变地址的排列顺序
+
+
+#### **连续播放（continuous playout）**
