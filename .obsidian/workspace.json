@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "english learning.md",
+                "file": "cs144.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "english learning"
+              "title": "cs144"
             }
           },
           {
@@ -218,8 +218,8 @@
   },
   "active": "c024d1983d37ef44",
   "lastOpenFiles": [
-    "chapter 1 review question.md",
     "english learning.md",
+    "chapter 1 review question.md",
     "cs144.md",
     "Pasted image 20250112230731.png",
     "Pasted image 20250112230832.png",
