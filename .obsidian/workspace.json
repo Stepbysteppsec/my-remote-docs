@@ -182,10 +182,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "dfs.md"
+                "file": "cs144.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of dfs"
+              "title": "Outline of cs144"
             }
           },
           {
@@ -216,7 +219,7 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "c024d1983d37ef44",
+  "active": "8f15b3a821231390",
   "lastOpenFiles": [
     "english learning.md",
     "chapter 1 review question.md",
