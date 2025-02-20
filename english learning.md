@@ -499,3 +499,8 @@ he server responds with the entire set of IP addresses, but rotates the ordering
 
 
 #### **连续播放（continuous playout）**
+
+
+
+control. Congestion control is not so much a service provided to the invoking application as it is a service for the Internet as a whole, a service for the general good
+控制。拥塞控制与其说是提供给调用应用程序的服务，不如说是为整个互联网提供的服务，是一种为了公共利益的服务。
