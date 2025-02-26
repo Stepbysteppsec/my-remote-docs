@@ -75,8 +75,7 @@
               "title": "chapter 1 review question"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -232,7 +231,7 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "780f2d3e0e12a0fa",
+  "active": "c024d1983d37ef44",
   "lastOpenFiles": [
     "cs144.md",
     "english learning.md",

@@ -504,3 +504,37 @@ he server responds with the entire set of IP addresses, but rotates the ordering
 
 control. Congestion control is not so much a service provided to the invoking application as it is a service for the Internet as a whole, a service for the general good
 控制。拥塞控制与其说是提供给调用应用程序的服务，不如说是为整个互联网提供的服务，是一种为了公共利益的服务。
+
+
+在定语从句 “the rate at which it sends traffic into its connection” 中使用 “at” 是因为 “rate（速率）” 这个词在表达“以某种速率做某事”时，常用的介词搭配就是 “at”。
+
+### 详细解释
+
+- ​**​“rate” 与 “at” 的搭配**：
+    
+    在英语中，当我们谈论某个具体的速率、速度时，通常会使用介词 “at” 来表示“以……的速率”。例如：
+    
+    - ​**​“at a high rate”​**：以很高的速率。
+    - ​**​“at a slow rate”​**：以很慢的速率。
+    - ​**​“at which it sends traffic”​**：以它发送数据的速率。
+    
+    这种搭配在描述速度、速率时非常常见，因此 “at which” 在这里用于引导定语从句，修饰 “rate”，表示“以什么样的速率”。
+
+### 1. ​**​“as”的语法功能**
+
+- ​**​“as”是介词**：在这里，“as”是一个介词，与“opposed to”结合，构成一个介词短语“as opposed to”。
+- ​**引导对比对象**：这个介词短语的作用是引导一个对比的对象，表示“与……相反”“而不是”。它用于强调前后两个事物的差异。
+
+---
+
+### 2. ​**​“as”在句子中的成分**
+
+- ​**介词短语作状语**：在句子“In order to focus on congestion control (as opposed to flow control)”中，“as opposed to flow control”是一个介词短语，修饰整个句子，作**状语**，表示“与流量控制相反”的对比关系。
+- ​**补充说明**：它进一步补充说明了“focus on congestion control”的语境，强调这里关注的是“拥塞控制”而不是“流量控制”。
+
+---
+
+### 3. ​**​“as”的语义**
+
+- ​**对比关系**：在这里，“as”并不单独承担语义，而是与“opposed to”一起表达对比关系。它相当于“而不是”或“与……相反”。
+- ​**强调差异**：通过“as opposed to”，句子强调了“拥塞控制”和“流量控制”是两个不同的概念，这里讨论的是前者而不是后者。Because TCP uses acknowledgments to trigger (or clock) its increase in congestion window size, TCP is said to be self-clocking.
