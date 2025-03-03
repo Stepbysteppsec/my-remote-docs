@@ -744,4 +744,4 @@ studied in this chapter.
 现在我设置好了 git
 
 
-revoke 撤销
+revoke 撤
