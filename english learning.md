@@ -538,3 +538,111 @@ control. Congestion control is not so much a service provided to the invoking ap
 
 - ​**对比关系**：在这里，“as”并不单独承担语义，而是与“opposed to”一起表达对比关系。它相当于“而不是”或“与……相反”。
 - ​**强调差异**：通过“as opposed to”，句子强调了“拥塞控制”和“流量控制”是两个不同的概念，这里讨论的是前者而不是后者。Because TCP uses acknowledgments to trigger (or clock) its increase in congestion window size, TCP is said to be self-clocking.
+
+
+- **peachy way**：在这里可以理解为“一种非常棒的方式”或“一种令人愉快的方式”。
+
+### **as well as 的含义**
+
+- **基本意思**：表示“以及”或“还有”，用于连接两个并列的成分。
+    
+- **在句子中的作用**：
+    
+    - 第一个 **“as well as”** 连接了“introduce the major thematic concepts”和“review material every now and then”，表示这两件事都会发生。
+        
+    - 第二个 **“as well as”** 进一步补充说明“review material every now and then”也是其中的一部分。
+        
+- **翻译**：这些方法不仅用于引入主要的主题概念（我们会看到，以一种非常棒的方式），还用于时不时地复习材料。
+- **peachy**：原意是“桃子的”，但在口语中常用来表示“极好的”“棒极了”或“令人愉快的”。
+    
+- **peachy way**：在这里可以理解为“一种非常棒的方式”或“一种令人愉快的方式”。
+    
+- **语境中的作用**：作者用“peachy way”来形容引入主题概念的方式，可能是为了表达一种轻松、愉快或高效的氛围。
+
+We both think back fondly towards some textbooks of our undergraduate days (
+
+这句话可以翻译为：**“我们都深情地回忆起我们本科时期的一些教科书。”**
+
+---
+
+### **翻译解析**
+
+1. **We both**：我们俩，表示两个人。
+    
+2. **think back fondly**：深情地回忆。
+    
+    - **think back**：回忆。
+        
+    - **fondly**：深情地，怀旧地。
+        
+3. **towards**：在这里表示“对……的回忆”。
+    
+4. **some textbooks of our undergraduate days**：我们本科时期的一些教科书。
+
+**"that sort of stuff"**​ 是一种非正式的表达方式，意思是 ​**​“这类事情”​**​ 或 ​**​“这一类的内容”​**。
+
+
+I mean, what else do I have to do anyhow?
+反正我还能做些什么呢？
+
+It’s not like I have much of a life outside of this book.
+除了这本书，我的生活也没多少内容
+
+
+在句子 ​**"as it is in charge of making sure the system operates correctly and efficiently in an easy-to-use manner"**​ 中，**"as it is in charge of"**​ 是一个从句，用来解释或说明主句的内容。以下从语法和意思两方面分析：
+
+---
+
+### ​**1. 意思分析**
+
+**"as it is in charge of"**​ 的意思是 ​**​“因为它负责”​**​ 或 ​**​“由于它的职责是”​**。
+
+- ​**"as"**​ 在这里表示原因或理由，相当于 ​**​“因为”​**​ 或 ​**由于”。
+- ​**"it is in charge of"**​ 表示 ​**​“它负责”​**​ 或 ​**​“它的职责是”​**。
+- 整体上，这个短语用来解释操作系统（OS）的功能和职责，说明它之所以被称为操作系统的原因。
+
+---
+
+### ​**2. 语法分析**
+
+从语法上看，**"as it is in charge of"**​ 是一个**原因状语从句**，修饰主句 ​**"it is called the operating system (OS)"**。
+
+- ​**"as"**​ 是从属连词，引导从句。
+- ​**"it"**​ 是主语，指代 ​**"the operating system (OS)"**。
+- ​**"is in charge of"**​ 是谓语部分，其中 ​**"in charge of"**​ 是固定短语，表示 ​**​“负责”​**。
+- ​**"making sure the system operates correctly and efficiently in an easy-to-use manner"**​ 是 ​**"of"**​ 的宾语，说明具体负责的内容。
+
+---
+
+### ​**总结**
+
+- ​**意思**：​**"as it is in charge of"**​ 表示 ​**​“因为它负责”​**，用来解释操作系统（OS）的功能。
+- ​**语法**：它是一个原因状语从句，修饰主句，说明被称为操作系统的原因。
+- **are themselves portable**：谓语部分，表示“它们本身是可移植的”。
+    
+    - **are**：系动词。
+        
+    - **themselves**：强调主语“它们自己”。
+        
+    - **portable**：表语，表示“可移植的”。
+
+**The range of both int and float depends on the machine you are using; l6-bit ints, which lie between -32768 and +32767, are common, as are 32-bit ints**
+
+- **The range of both int and float depends on the machine you are using**：
+    
+    - **The range of both int and float**：主语，表示“`int` 和 `float` 的范围”。
+        
+    - **depends on**：谓语，表示“取决于”。
+        
+    - **the machine you are using**：宾语，表示“你所使用的机器”。
+        
+- **l6-bit ints, which lie between -32768 and +32767, are common, as are 32-bit ints**：
+    
+    - **l6-bit ints**：主语，表示“16位整数”。
+        
+    - **which lie between -32768 and +32767**：定语从句，修饰“l6-bit ints”，表示“范围在 -32768 到 +32767 之间”。
+        
+    - **are common**：谓语，表示“很常见”。
+        
+    - **as are 32-bit ints**：状语，表示“32位整数也很常见”。
+“tint” 的意思是 “色调；淡色；给…… 轻微染色；使带有某种气息
