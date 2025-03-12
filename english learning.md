@@ -540,6 +540,7 @@ control. Congestion control is not so much a service provided to the invoking ap
 - ​**强调差异**：通过“as opposed to”，句子强调了“拥塞控制”和“流量控制”是两个不同的概念，这里讨论的是前者而不是后者。Because TCP uses acknowledgments to trigger (or clock) its increase in congestion window size, TCP is said to be self-clocking.
 
 
+<<<<<<< HEAD
 - **peachy way**：在这里可以理解为“一种非常棒的方式”或“一种令人愉快的方式”。
 
 ### **as well as 的含义**
@@ -646,3 +647,210 @@ It’s not like I have much of a life outside of this book.
         
     - **as are 32-bit ints**：状语，表示“32位整数也很常见”。
 “tint” 的意思是 “色调；淡色；给…… 轻微染色；使带有某种气息
+=======
+
+
+
+
+often behind on email 经常拖延电子邮件
+
+### When Can You NOT Reduce a Relative Clause?
+
+1. When the relative clause has a **modal verb** (like _can_, _must_, _will_, etc.):
+    
+    - **Example**: _"The book that you must read is on the table."_
+        - You **cannot** reduce this because _"must"_ is a modal verb and cannot be dropped.
+2. When the relative clause involves **two subjects** (you can't simply turn them into a participle):
+    
+    - **Example**: _"The man who is my neighbor and who works with me is very friendly."_
+        - You **cannot** reduce this easily into a single participle.
+
+
+提及： there was a question that discussed two situations regarding connection closure
+
+the server is overwhelmed 服务器不堪重负
+
+don't necessarily trust" 可以翻译为 **“不一定信任”** 或 **“未必信任”**
+
+
+- **表示通过特定网络传输**：“over” 常用来描述数据、信息等通过某种网络基础设施进行传输。例如 “data transmitted over the Internet”（通过互联网传输的数据） ，“voice”（语音）通过 “military networks”（军事网络）来传输，所以用 “over”。
+- **类似用法的类比**：在通信领域，这种表达很常见。如 “streaming video over the wireless network”（通过无线网络流媒体视频） ，“over the wireless network” 说明视频流传输所依赖的网络环境，同理，“over military networks” 说明安全语音通信所依托的是军事网络。
+
+cmake tools will be aware of them ,cmake 工具将会识别他们。
+
+
+
+but I don’t understand why it is translated this way.
+
+when taken together : 总的来说
+
+memory aids 记忆方法
+
+immutable distributed ledgers 
+
+“a vast array of” 是固定短语，“大量的，一系列的”
+- 放弃的原因。
+
+- “say” 常见意思为 “说；表明” ，在这里用作插入语，相当于 “for example”，表示举例说明，可译为 “比如说” 。
+
+
+Long delays in Internet telephony, for example, tend to result in unnatural pauses in the conversation;  
+例如，互联网电话中的长时间延迟往往会导致对话中出现不自然的停顿；
+
+
+1. **“fare” 常见含义并非 “公平”**：“fare” 常见作名词时，意为 “车费；船费；饭菜” ，作动词时表示 “进展；遭遇” 。表示 “公平的” 是 “fair”，和 “fare” 词形相近但意思不同。
+
+分享
+
+“welfare”的复数形式是什么？
+
+用“welfare”造句
+
+除了“well”和“welcome”，“wel”开头的常见英文单词还有哪些？
+
+
+
+level messages begin to flow.   在应用层消息开始传输之前
+
+ an onslaught of packets. 大量的数据包
+on the order of minutes 在分钟的数量级
+
+that is  也就是说
+
+eliminates 消除
+It remains one of the Internet’s most important and utilized applications. 它仍然是世界上应用最重要应用最广泛的程序之一
+
+When Alice writes an ordinary snail-mail letter to Bob, she may include all kinds 
+of peripheral header information at the top of the letter, such as Bob’s address, her 
+own return address, and the date.
+尽管 SMTP 凭借其在互联网上的广泛应用，展现出众多卓越特性，但它仍是一项传统技术，存在一些过时的特点。
+
+- **As with HTTP, each header line contains readable text, consisting of a keyword followed by a colon followed by a value.**：与 HTTP 一样，每个头部行都包含可读文本，由一个关键字、一个冒号和一个值组成。
+as in the case of 和什么一样
+
+
+case the joint 踩点
+finer control 更细粒度的控制
+
+when the network is in a 
+stressed state—precisely when reliable, congestion-controlled data transfer is diffi-
+cult to achieve.
+### 翻译
+
+我们在第2章中了解到，早期版本的HTTP运行在TCP之上，但更新版本的HTTP运行在UDP之上，在应用层提供自己的错误控制和拥塞控制（以及其他服务）。尽管如此，许多重要的应用程序仍然运行在UDP之上而不是TCP之上。例如，UDP用于传输网络管理（SNMP；见第5.7节）数据。在这种情况下，UDP优于TCP，因为网络管理应用程序通常必须在网络处于紧张状态时运行——恰恰在这种情况下，实现可靠的、拥塞控制的数据传输是困难的。
+
+
+"crowding out of" 翻译为“排挤”或“挤出”，在句子中表示由于某种原因，TCP 会话被排挤或受到影响。
+
+have its cake and eat it too  鱼与熊掌兼得
+underlying princples 基本原理
+
+1. **Live with it（接受它）**：表示尽管存在问题，但不得不接受或适应。
+2. **Well entrenched（根深蒂固的）**：表示这些术语已经广泛使用并深入人心，难以改变。
+短语 **are smoothed out** 中的 **out** 是一个副词，用于表示某种动作或效果的结果是“消除”或“减轻”。
+
+在这里，**premature** 的意思是“过早的”或“不成熟的”。它用来描述某种行为或事件发生得太早，可能还不合适或没有必要。
+
+具体到你的例子中，**premature timeout** 的意思是“过早的超时”，即 TCP 在还没有必要的情况下触发了超时重传机制。
+
+---
+
+### **解释**
+
+1. **Premature**：
+    
+    - 表示某事发生得太早，还没有到合适的时机。
+    - 例如：
+        - **Premature birth**：早产。
+        - **Premature decision**：草率的决定。
+2. **Premature timeout**：
+    
+    - 在 TCP 中，超时重传机制用于在数据段丢失时重新发送数据。
+    - 如果超时时间设置得太短，可能会在数据段实际上并未丢失的情况下触发重传，这就是“过早的超时”。
+
+Let’s analyze the grammar of the sentence and then provide a translation:
+
+---
+
+### **Grammar Analysis**
+The sentence is:  
+**"The receive window, denoted rwnd is set to the amount of spare room in the buffer: rwnd = RcvBuffer – [LastByteRcvd – LastByteRead]."**
+
+1. **Subject**:  
+   - "The receive window" (the main subject of the sentence).
+
+2. **Appositive phrase**:  
+   - "denoted rwnd" (provides additional information about "the receive window").
+
+3. **Verb phrase**:  
+   - "is set to" (the main verb phrase describing the action).
+
+4. **Object**:  
+   - "the amount of spare room in the buffer" (what the receive window is set to).
+
+5. **Formula**:  
+   - "rwnd = RcvBuffer – [LastByteRcvd – LastByteRead]" (a mathematical expression explaining how the receive window is calculated).
+
+---
+
+### **Grammar Issues**
+1. **Comma usage**:  
+   - The comma after "rwnd" is unnecessary. It should be:  
+     "The receive window, denoted rwnd, is set to the amount of spare room in the buffer: rwnd = RcvBuffer – [LastByteRcvd – LastByteRead]."
+
+2. **Clarity**:  
+   - The sentence is technically correct but could be made clearer by rephrasing:  
+     "The receive window, denoted as rwnd, is set to the amount of available space in the buffer, calculated as: rwnd = RcvBuffer – [LastByteRcvd – LastByteRead]."
+
+---
+
+### **Translation**
+Here’s how to translate the sentence into Chinese:  
+**"接收窗口，记为 rwnd，被设置为缓冲区中的剩余空间，计算公式为：rwnd = RcvBuffer – [LastByteRcvd – LastByteRead]。"**
+
+---
+
+### **Explanation of the Translation**
+1. **"接收窗口"**: The receive window.  
+2. **"记为 rwnd"**: Denoted as rwnd.  
+3. **"被设置为"**: Is set to.  
+4. **"缓冲区中的剩余空间"**: The amount of spare room in the buffer.  
+5. **"计算公式为"**: Calculated as.  
+6. **"rwnd = RcvBuffer – [LastByteRcvd – LastByteRead]"**: The formula remains the same in translation.
+
+---
+
+Let me know if you need further clarification!1. - 
+"as opposed to" 表示对比或替代关系。
+    - "two-way handshake" 是假设的 ​**两次握手**​ 过程。
+
+"treats a symptom" 意思是“解决症状”，
+
+
+1. ​**"Ignoring the additional overhead due to adding transport- and lower-layer header information"**:
+    
+    - "忽略由于添加传输层和更低层头部信息而产生的额外开销。"
+    - 这里 "overhead" 指“开销”，即额外的数据或资源消耗。、
+
+
+necessity 必要性
+
+**"only then"**: 然后才。
+
+
+1. **"to agree with measured data"**: 与测量数据一致。
+在这个句子中，“roll their own” 是一个习语，意思是 “自行开发；自己制作；自己设计” 。在这里表示应用程序设计师可以按照自己的需求在应用层开发出适合的协议。
+
+
+
+ Our study of QUIC will also serve as a nice culmi-
+nation of our study of the transport layer, as QUIC uses many of the approaches for 
+reliable data transfer, congestion control, and connection management that we’ve 
+studied in this chapter.
+
+
+现在我设置好了 git
+
+
+revoke 撤
+>>>>>>> origin/main
