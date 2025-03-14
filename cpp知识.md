@@ -316,3 +316,9 @@ public:
 `LogManager::instance()` 返回的是一个 `LogManager` 对象的引用，而 `m_logger` 通常是一个 `LogManager*` 类型的指针。引用是对象的别名，而指针是存储对象地址的变量。为了将引用转换为指针，需要使用取地址运算符 `&`。 例如，以下代码展示了引用和指针的使用：
 ```cpp #include <iostream> class MyClass { public: static MyClass& instance() { static MyClass obj; return obj; } void printMessage() { std::cout << "Hello, World!" << std::endl; } }; int main() { // 获取引用 MyClass& ref = MyClass::instance(); ref.printMessage(); // 获取指针 MyClass* ptr = &MyClass::instance(); ptr->printMessage(); return 0; } ``` 
 在这个例子中，`ref` 是 `MyClass` 对象的引用，而 `ptr` 是指向 `MyClass` 对象的指针。通过 `&` 运算符，我们将 `MyClass::instance()` 返回的引用转换为指针，以便可以使用指针的方式访问对象的成员函数。 综上所述，`&` 在 `m_logger = &LogManager::instance();` 中的作用是将 `LogManager` 对象的引用转换为指针，以便将其赋值给 `m_logger` 指针变量。
+
+### 实例化
+就是根据类的定义在内存中创建对象的过程，会调用类的构造函数来初始化对象的成员变量。
+
+### 类的声明（`class MainController`）
+当你在头文件（通常以 `.h` 或 `.hpp` 为扩展名）中写下 `class MainController` 时，这是在向编译器宣告 `MainController` 是一个类类型。类的声明仅仅告知编译器该类的存在，让编译器知道这个名称代表一个类，但并没有给出类的具体实现细节。
