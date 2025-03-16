@@ -329,7 +329,23 @@ public:
 ### 跨文件获取单例实例的底层原理 
 #### 单例模式的实现基础 
 单例模式的核心思想是确保一个类只有一个实例，并提供一个全局访问点来获取该实例。在 C++ 中，通常通过静态成员函数和静态局部变量来实现单例模式。以下是一个简化的 `LogManager` 单例实现示例：
-```cpp // log_manager.h class LogManager { public: static LogManager& instance(); // 其他成员函数... private: LogManager(); ~LogManager(); LogManager(const LogManager&) = delete; LogManager& operator=(const LogManager&) = delete; }; // log_manager.cpp #include "log_manager.h" LogManager& LogManager::instance() { static LogManager instance; return instance; } ``` 
+```cpp 
+// log_manager.h class LogManager { 
+	public: 
+	static LogManager& instance(); 
+	// 其他成员函数... 
+	private: LogManager(); 
+	~LogManager(); 
+	LogManager(const LogManager&) = delete; 
+	LogManager& operator=(const LogManager&) = delete; 
+	}; 
+// log_manager.cpp 
+#include "log_manager.h" 
+	LogManager& LogManager::instance() { 
+	static LogManager instance; 
+	return instance; 
+	} 
+	``` 
 #### 跨文件获取实例的原理 
 当我们在不同的文件（如 `main.cpp` 和 `maincontroller.cpp`）中使用 `LogManager::instance()` 时，实际上是在调用 `LogManager` 类的静态成员函数 `instance()`。静态成员函数属于类本身，而不是类的某个对象，因此可以在不创建 `LogManager` 对象的情况下直接调用。 在 `instance()` 函数内部，使用了静态局部变量 `instance`。静态局部变量在程序的整个生命周期内只会被初始化一次，并且在函数第一次调用时进行初始化。因此，无论在多少个文件中调用 `LogManager::instance()`，返回的都是同一个 `LogManager` 对象的引用。 当编译器编译多个源文件时，每个源文件都会独立编译成目标文件（`.o` 或 `.obj` 文件），然后链接器会将这些目标文件链接成一个可执行文件。在链接过程中，所有对 `LogManager::instance()` 函数的调用都会指向同一个实现，从而保证了整个程序中只有一个 `LogManager` 实例。
 ### `&` 的作用 
