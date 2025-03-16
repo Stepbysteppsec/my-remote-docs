@@ -34,6 +34,48 @@
             }
           },
           {
+            "id": "b8315f5afd4a0038",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "操作系统/基础知识.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "基础知识"
+            }
+          },
+          {
+            "id": "db74e928c6801fd8",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "操作系统/基础知识.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "基础知识"
+            }
+          },
+          {
+            "id": "7626c7b649359c03",
+            "type": "leaf",
+            "state": {
+              "type": "split-diff-view",
+              "state": {
+                "aFile": "2025-01-07.md",
+                "bFile": "2025-01-07.md",
+                "aRef": ""
+              },
+              "icon": "diff",
+              "title": "Diff: 2025-01-07"
+            }
+          },
+          {
             "id": "780f2d3e0e12a0fa",
             "type": "leaf",
             "state": {
@@ -88,7 +130,7 @@
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -244,24 +286,27 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "c2d1f7ae15a595b8",
+  "active": "7626c7b649359c03",
   "lastOpenFiles": [
-    "conflict-files-obsidian-git.md",
-    "english learning.md",
-    "cs144.md",
+    "操作系统/基础知识.md",
+    "121736694417_.pic.jpg",
+    "2025-01-07.md",
+    "121736694417_.pic 1.jpg",
+    "摄影艺术全套.md",
     "chapter 1 review question.md",
+    "cpp知识.md",
+    "conflict-files-obsidian-git.md",
+    "cs144.md",
+    "dfs.md",
+    "english learning.md",
+    "操作系统",
     "Pasted image 20250112230731.png",
     "Pasted image 20250112230832.png",
-    "121736694417_.pic 1.jpg",
-    "121736694417_.pic.jpg",
     "Pasted image 20250112210848.png",
     "Pasted image 20250112230842.png",
-    "摄影艺术全套.md",
     "Welcome.md",
     "README.md",
     "hello  the future.md",
-    "dfs.md",
-    "2025-01-07.md",
     "Untitled.canvas"
   ]
 }
