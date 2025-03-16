@@ -11,14 +11,14 @@
             "id": "b41f394d344edb8a",
             "type": "leaf",
             "state": {
-              "type": "split-diff-view",
+              "type": "markdown",
               "state": {
-                "aFile": "操作系统/基础知识.md",
-                "bFile": "操作系统/基础知识.md",
-                "aRef": ""
+                "file": "操作系统/基础知识.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "diff",
-              "title": "Diff: 基础知识"
+              "icon": "lucide-file",
+              "title": "基础知识"
             }
           }
         ]
@@ -74,8 +74,7 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -180,11 +179,12 @@
   },
   "active": "b41f394d344edb8a",
   "lastOpenFiles": [
+    "Untitled.canvas",
+    "qt 基础知识.md",
     "操作系统/基础知识.md",
     "conflict-files-obsidian-git.md",
     "Welcome.md",
     "README.md",
-    "qt 基础知识.md",
     "chapter 1 review question.md",
     "hello  the future.md",
     "english learning.md",
@@ -199,7 +199,6 @@
     "Pasted image 20250112230731.png",
     "Pasted image 20250112230832.png",
     "Pasted image 20250112210848.png",
-    "Pasted image 20250112230842.png",
-    "Untitled.canvas"
+    "Pasted image 20250112230842.png"
   ]
 }
