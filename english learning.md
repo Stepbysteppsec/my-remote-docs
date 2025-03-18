@@ -854,3 +854,5 @@ studied in this chapter.
 
 revoke 撤
 
+“unlike the transport and application layers” 翻译为 “不像传输层和应用层” 表述比较平淡，更自然、符合表达习惯的可以是 “与传输层和应用层不同
+

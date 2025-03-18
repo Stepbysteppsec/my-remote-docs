@@ -4,24 +4,53 @@
     "type": "split",
     "children": [
       {
-        "id": "dc3bc73f48b84671",
+        "id": "95416b6e9865de8b",
         "type": "tabs",
         "children": [
           {
-            "id": "b41f394d344edb8a",
+            "id": "c024d1983d37ef44",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "cpp知识.md",
+                "file": "qt 基础知识.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "cpp知识"
+              "title": "qt 基础知识"
+            }
+          },
+          {
+            "id": "2a2a0e865b8dd648",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "english learning.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "english learning"
+            }
+          },
+          {
+            "id": "4a980be5dc5a2826",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "操作系统/基础知识.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "基础知识"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -78,7 +107,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200
   },
   "right": {
     "id": "20511656a65c1757",
@@ -164,7 +193,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 279.5
+    "width": 397.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -177,29 +206,28 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "b41f394d344edb8a",
+  "active": "2a2a0e865b8dd648",
   "lastOpenFiles": [
     "todolist.md",
-    "chapter 1 review question.md",
-    "摄影艺术全套.md",
-    "操作系统/基础知识.md",
-    "Untitled.canvas",
     "qt 基础知识.md",
-    "conflict-files-obsidian-git.md",
-    "Welcome.md",
-    "README.md",
-    "hello  the future.md",
+    "操作系统/基础知识.md",
     "english learning.md",
-    "121736694417_.pic.jpg",
-    "2025-01-07.md",
-    "121736694417_.pic 1.jpg",
     "cpp知识.md",
+    "Untitled.canvas",
+    "121736694417_.pic.jpg",
+    "121736694417_.pic 1.jpg",
+    "摄影艺术全套.md",
+    "hello  the future.md",
     "cs144.md",
-    "dfs.md",
+    "chapter 1 review question.md",
+    "2025-01-07.md",
     "操作系统",
+    "dfs.md",
     "Pasted image 20250112230731.png",
     "Pasted image 20250112230832.png",
     "Pasted image 20250112210848.png",
-    "Pasted image 20250112230842.png"
+    "Pasted image 20250112230842.png",
+    "Welcome.md",
+    "README.md"
   ]
 }
