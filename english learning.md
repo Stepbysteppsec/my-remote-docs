@@ -870,3 +870,6 @@ The value stored in the forwarding table entry for those values indicates the ou
   
 
 解释：原句中 “The value stored in the forwarding table entry for those values” 中 “for those values” 是指对于数据报首部中相关字段的值，“indicates” 是 “指明” 的意思，“the outgoing link interface at that router” 是 “该路由器上的外出链路接口” ，“to which that packet is to be forwarded” 是定语从句修饰接口，表示数据包要被转发到的接口。 你的翻译在理解和表达上都没有准确传达原文意思。
+
+
+1. - 原句 “emulates the behavior of a transmission link of a specified bit rate between sending and receiving hosts” 翻译时语序有点不太自然，更自然的语序是 “模拟了发送主机和接收主机之间一条具有特定比特率的传输链路的行为”，突出 “发送主机和接收主机之间” 这个位置关系以及 “具有特定比特率” 修饰 “传输链路”。
