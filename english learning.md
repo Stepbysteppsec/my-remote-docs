@@ -856,3 +856,17 @@ revoke 撤
 
 “unlike the transport and application layers” 翻译为 “不像传输层和应用层” 表述比较平淡，更自然、符合表达习惯的可以是 “与传输层和应用层不同
 
+
+The value stored in the forwarding table entry for those values indicates the outgoing link interface at that router to which that packet is to be forwarded. 这些在转发表中的条目值是为了这些向外链路接口的值 这些数据包将被转发到 请纠正我的翻译
+
+分享
+
+你翻译的内容存在较多错误，以下是纠正后的翻译：
+
+  
+
+对于这些（数据报首部中相关字段的）值而言，存储在转发表条目中的值指明了该路由器上的一个外出链路接口，数据包将被转发到这个接口。
+
+  
+
+解释：原句中 “The value stored in the forwarding table entry for those values” 中 “for those values” 是指对于数据报首部中相关字段的值，“indicates” 是 “指明” 的意思，“the outgoing link interface at that router” 是 “该路由器上的外出链路接口” ，“to which that packet is to be forwarded” 是定语从句修饰接口，表示数据包要被转发到的接口。 你的翻译在理解和表达上都没有准确传达原文意思。
