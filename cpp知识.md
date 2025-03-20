@@ -362,4 +362,115 @@ public:
 当你在头文件（通常以 `.h` 或 `.hpp` 为扩展名）中写下 `class MainController` 时，这是在向编译器宣告 `MainController` 是一个类类型。类的声明仅仅告知编译器该类的存在，让编译器知道这个名称代表一个类，但并没有给出类的具体实现细节。
 
 
+在C++中，私有成员函数确实不能通过类的对象在类外部直接调用。这是面向对象编程中**封装性**的核心设计——私有成员（包括函数和变量）是类的内部实现细节，对外部代码隐藏。以下是详细的解释和调用私有成员函数的正确方式：
+
+---
+
+### 一、为什么不能通过对象直接调用？
+```cpp
+class Example {
+private:
+    void secretFunction() { /* 私有函数 */ }
+public:
+    void publicFunction() { /* 公有函数 */ }
+};
+
+int main() {
+    Example obj;
+    obj.publicFunction();  // ✔️ 允许：公有成员可外部访问
+    obj.secretFunction();  // ❌ 编译错误：私有成员禁止外部访问
+}
+```
+- 编译器会直接报错：`'secretFunction' is a private member of 'Example'`
+- 这是语言级别的强制约束，确保类的内部逻辑不被随意修改。
+
+---
+
+### 二、如何正确调用私有成员函数？
+
+#### 1. **通过公有成员函数间接调用**（最常见方式）
+将私有函数作为类的内部工具，通过公有接口暴露其功能：
+```cpp
+class BankAccount {
+private:
+    // 私有函数：内部验证逻辑
+    bool validatePassword(const std::string& input) const {
+        return input == "123456"; // 假设这是正确密码
+    }
+
+public:
+    // 公有函数：外部通过此接口间接使用私有函数
+    bool withdrawMoney(const std::string& password) {
+        if (validatePassword(password)) { // ✔️ 内部调用私有函数
+            // 允许提款...
+            return true;
+        }
+        return false;
+    }
+};
+
+int main() {
+    BankAccount account;
+    account.withdrawMoney("123456"); // ✔️ 通过公有方法间接触发私有函数
+}
+```
+
+#### 2. **友元（Friend）机制**（谨慎使用）
+通过`friend`声明授权特定外部函数或类访问私有成员：
+```cpp
+class SecureVault {
+private:
+    void unlockVault() { /* 私有解锁方法 */ }
+
+    // 声明友元函数
+    friend void securityBypass(SecureVault&);
+};
+
+// 友元函数可以访问私有成员
+void securityBypass(SecureVault& vault) {
+    vault.unlockVault(); // ✔️ 允许访问私有函数
+}
+
+int main() {
+    SecureVault vault;
+    securityBypass(vault); // 通过友元函数调用私有方法
+}
+```
+- **注意**：友元会破坏封装性，过度使用可能导致代码结构混乱，通常建议优先用公有接口。
+
+#### 3. **类的其他成员函数调用**
+私有函数可以被同一个类的其他成员函数（无论公有、保护或私有）调用：
+```cpp
+class DataProcessor {
+private:
+    void step1() { /* 处理步骤1 */ }
+    void step2() { /* 处理步骤2 */ }
+
+public:
+    void process() {
+        step1(); // ✔️ 公有函数调用私有函数
+        step2();
+    }
+};
+```
+
+---
+
+### 三、为什么这样设计？
+- **安全性**：防止外部代码随意修改关键内部逻辑（如银行卡密码验证）。
+- **可维护性**：隐藏实现细节，当内部逻辑修改时，不影响外部调用代码。
+- **接口清晰化**：公有函数作为明确的类契约，告诉用户如何正确交互。
+
+---
+
+### 四、总结
+| 调用方式               | 描述                          | 使用场景                  |
+|-----------------------|-----------------------------|-------------------------|
+| 公有函数间接调用         | 通过公有接口触发私有逻辑            | 常规操作，如提款、数据处理       |
+| 友元机制               | 授权特定外部函数/类访问            | 需要紧密协作的类/函数，但应慎用   |
+| 类内部其他成员函数调用     | 私有函数作为代码复用的工具           | 拆分复杂逻辑，提高代码可读性     |
+
+**最佳实践**：优先通过公有成员函数间接使用私有函数，严格控制友元的使用。这能最大程度保证代码的健壮性和可维护性。
+
+
 
