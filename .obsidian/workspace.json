@@ -36,6 +36,36 @@
             }
           },
           {
+            "id": "83d3c3a075b4ed6d",
+            "type": "leaf",
+            "state": {
+              "type": "split-diff-view",
+              "state": {
+                "aFile": "摄影艺术全套.md",
+                "bFile": "摄影艺术全套.md",
+                "aRef": "HEAD",
+                "bRef": ""
+              },
+              "icon": "diff",
+              "title": "Diff: 摄影艺术全套"
+            }
+          },
+          {
+            "id": "0fa26c3b3017a89a",
+            "type": "leaf",
+            "state": {
+              "type": "split-diff-view",
+              "state": {
+                "aFile": "摄影艺术全套.md",
+                "bFile": "摄影艺术全套.md",
+                "aRef": "HEAD",
+                "bRef": ""
+              },
+              "icon": "diff",
+              "title": "Diff: 摄影艺术全套"
+            }
+          },
+          {
             "id": "4a980be5dc5a2826",
             "type": "leaf",
             "state": {
@@ -50,7 +80,7 @@
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 3
       }
     ],
     "direction": "vertical"
@@ -206,15 +236,17 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "2a2a0e865b8dd648",
+  "active": "0fa26c3b3017a89a",
   "lastOpenFiles": [
+    "conflict-files-obsidian-git.md",
+    "操作系统/基础知识.md",
+    "Pasted image 20250320224237.png",
     "摄影艺术全套.md",
     "121736694417_.pic.jpg",
     "cpp知识.md",
     "english learning.md",
     "todolist.md",
     "qt 基础知识.md",
-    "操作系统/基础知识.md",
     "Untitled.canvas",
     "121736694417_.pic 1.jpg",
     "hello  the future.md",
