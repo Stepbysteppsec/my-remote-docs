@@ -25,41 +25,11 @@
             "id": "2a2a0e865b8dd648",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "操作系统/基础知识.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "基础知识"
-            }
-          },
-          {
-            "id": "83d3c3a075b4ed6d",
-            "type": "leaf",
-            "state": {
               "type": "split-diff-view",
               "state": {
                 "aFile": "摄影艺术全套.md",
                 "bFile": "摄影艺术全套.md",
-                "aRef": "HEAD",
-                "bRef": ""
-              },
-              "icon": "diff",
-              "title": "Diff: 摄影艺术全套"
-            }
-          },
-          {
-            "id": "0fa26c3b3017a89a",
-            "type": "leaf",
-            "state": {
-              "type": "split-diff-view",
-              "state": {
-                "aFile": "摄影艺术全套.md",
-                "bFile": "摄影艺术全套.md",
-                "aRef": "HEAD",
-                "bRef": ""
+                "aRef": ""
               },
               "icon": "diff",
               "title": "Diff: 摄影艺术全套"
@@ -80,7 +50,7 @@
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -236,29 +206,29 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "0fa26c3b3017a89a",
+  "active": "2a2a0e865b8dd648",
   "lastOpenFiles": [
-    "conflict-files-obsidian-git.md",
-    "操作系统/基础知识.md",
-    "Pasted image 20250320224237.png",
     "摄影艺术全套.md",
-    "121736694417_.pic.jpg",
-    "cpp知识.md",
+    "chapter 1 review question.md",
+    "Pasted image 20250320224237.png",
+    "Pasted image 20250112230842.png",
+    "Pasted image 20250112230832.png",
+    "Pasted image 20250112230731.png",
+    "Pasted image 20250112210848.png",
+    "hello  the future.md",
     "english learning.md",
+    "121736694417_.pic 1.jpg",
+    "121736694417_.pic.jpg",
+    "操作系统/基础知识.md",
+    "conflict-files-obsidian-git.md",
+    "cpp知识.md",
     "todolist.md",
     "qt 基础知识.md",
     "Untitled.canvas",
-    "121736694417_.pic 1.jpg",
-    "hello  the future.md",
     "cs144.md",
-    "chapter 1 review question.md",
     "2025-01-07.md",
     "操作系统",
     "dfs.md",
-    "Pasted image 20250112230731.png",
-    "Pasted image 20250112230832.png",
-    "Pasted image 20250112210848.png",
-    "Pasted image 20250112230842.png",
     "Welcome.md",
     "README.md"
   ]
