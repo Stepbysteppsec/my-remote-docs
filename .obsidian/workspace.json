@@ -22,20 +22,6 @@
             }
           },
           {
-            "id": "2a2a0e865b8dd648",
-            "type": "leaf",
-            "state": {
-              "type": "split-diff-view",
-              "state": {
-                "aFile": "摄影艺术全套.md",
-                "bFile": "摄影艺术全套.md",
-                "aRef": ""
-              },
-              "icon": "diff",
-              "title": "Diff: 摄影艺术全套"
-            }
-          },
-          {
             "id": "4a980be5dc5a2826",
             "type": "leaf",
             "state": {
@@ -49,8 +35,7 @@
               "title": "基础知识"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -206,7 +191,7 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "2a2a0e865b8dd648",
+  "active": "8f15b3a821231390",
   "lastOpenFiles": [
     "摄影艺术全套.md",
     "chapter 1 review question.md",
