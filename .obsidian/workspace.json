@@ -25,14 +25,14 @@
             "id": "2c6e3cba3ec26721",
             "type": "leaf",
             "state": {
-              "type": "split-diff-view",
+              "type": "markdown",
               "state": {
-                "aFile": "conflict-files-obsidian-git.md",
-                "bFile": "conflict-files-obsidian-git.md",
-                "aRef": ""
+                "file": "cpp知识.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "diff",
-              "title": "Diff: conflict-files-obsidian-git"
+              "icon": "lucide-file",
+              "title": "cpp知识"
             }
           },
           {
@@ -208,6 +208,7 @@
   },
   "active": "2c6e3cba3ec26721",
   "lastOpenFiles": [
+    "操作系统/基础知识.md",
     "conflict-files-obsidian-git.md",
     "cpp知识.md",
     "截屏 2025-03-23 下午3.46.06.jpeg",
@@ -223,7 +224,6 @@
     "english learning.md",
     "121736694417_.pic 1.jpg",
     "121736694417_.pic.jpg",
-    "操作系统/基础知识.md",
     "todolist.md",
     "Untitled.canvas",
     "cs144.md",
