@@ -473,4 +473,76 @@ public:
 **最佳实践**：优先通过公有成员函数间接使用私有函数，严格控制友元的使用。这能最大程度保证代码的健壮性和可维护性。
 
 
+### c++限定符
+在C++中，限定符（Qualification）是一种用于指定名称或作用域的语法机制。主要有以下几种类型：
 
+1. 命名空间限定符
+
+```cpp
+// 使用命名空间限定符
+std::cout << "Hello World" << std::endl;
+// 这里的 std:: 就是一个命名空间限定符
+```
+
+2. 类作用域限定符
+
+```cpp
+class MyClass {
+public:
+    // 类的成员函数声明
+    void memberFunction();
+};
+
+// 定义成员函数时使用类作用域限定符
+void MyClass::memberFunction() {
+    // 函数实现
+}
+// 这里的 MyClass:: 就是类作用域限定符
+```
+
+3. 嵌套类的限定符
+
+```cpp
+class OuterClass {
+public:
+    class InnerClass {
+    public:
+        void innerFunction();
+    };
+};
+
+// 定义嵌套类的成员函数
+void OuterClass::InnerClass::innerFunction() {
+    // 函数实现
+}
+```
+
+4. 作用
+    
+    - 指明名称的具体来源
+    - 避免命名冲突
+    - 明确代码的作用域
+5. 示例
+    
+
+```cpp
+namespace Math {
+    class Calculator {
+    public:
+        int add(int a, int b);
+    };
+}
+
+// 使用限定符定义成员函数
+int Math::Calculator::add(int a, int b) {
+    return a + b;
+}
+```
+
+主要目的是：
+
+- 精确指出名称的来源
+- 解决命名空间和类的作用域问题
+- 提供代码的清晰性和可读性
+
+限定符帮助编译器准确理解代码中各个标识符的具体位置和含义，是C++面向对象和命名空间机制的重要语法元素。
