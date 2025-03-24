@@ -22,6 +22,20 @@
             }
           },
           {
+            "id": "2c6e3cba3ec26721",
+            "type": "leaf",
+            "state": {
+              "type": "split-diff-view",
+              "state": {
+                "aFile": "conflict-files-obsidian-git.md",
+                "bFile": "conflict-files-obsidian-git.md",
+                "aRef": ""
+              },
+              "icon": "diff",
+              "title": "Diff: conflict-files-obsidian-git"
+            }
+          },
+          {
             "id": "4a980be5dc5a2826",
             "type": "leaf",
             "state": {
@@ -35,7 +49,8 @@
               "title": "基础知识"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -191,8 +206,11 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "c024d1983d37ef44",
+  "active": "2c6e3cba3ec26721",
   "lastOpenFiles": [
+    "conflict-files-obsidian-git.md",
+    "cpp知识.md",
+    "截屏 2025-03-23 下午3.46.06.jpeg",
     "qt 基础知识.md",
     "摄影艺术全套.md",
     "chapter 1 review question.md",
@@ -206,8 +224,6 @@
     "121736694417_.pic 1.jpg",
     "121736694417_.pic.jpg",
     "操作系统/基础知识.md",
-    "conflict-files-obsidian-git.md",
-    "cpp知识.md",
     "todolist.md",
     "Untitled.canvas",
     "cs144.md",
