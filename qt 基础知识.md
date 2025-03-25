@@ -81,3 +81,8 @@ void P2pUdpWorker::onEntity1DataReady() {
 ---
 
 总结：`readyRead` 是 Qt 网络编程中**异步接收数据的核心信号**，实现了数据到达时的自动处理。如果需要进一步优化（如超时处理或错误恢复），可以结合其他信号（如 `errorOccurred`）完善逻辑。
+
+
+### 错误信息特征
+
+错误信息 `undefined reference to 'P2pUdpWorker::onStatusReportTimer()'` 是典型的链接错误提示。在编译流程中，编译器和链接器的职责不同，编译器负责将源代码转换为目标文件，而链接器负责将多个目标文件以及库文件组合成一个可执行文件。当出现 `undefined reference` 这类错误时，意味着链接器在尝试将各个部分组合在一起时，找不到某个符号（这里是函数 `P2pUdpWorker::onStatusReportTimer()` 的定义）的实现，所以这是链接阶段特有的错误类型。
