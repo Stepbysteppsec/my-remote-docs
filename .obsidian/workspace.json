@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "操作系统/基础知识.md",
+                "file": "摄影艺术全套.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "基础知识"
+              "title": "摄影艺术全套"
             }
           },
           {
@@ -208,9 +208,9 @@
   },
   "active": "2c6e3cba3ec26721",
   "lastOpenFiles": [
+    "操作系统/基础知识.md",
     "qt 基础知识.md",
     "cpp知识.md",
-    "操作系统/基础知识.md",
     "conflict-files-obsidian-git.md",
     "截屏 2025-03-23 下午3.46.06.jpeg",
     "摄影艺术全套.md",
