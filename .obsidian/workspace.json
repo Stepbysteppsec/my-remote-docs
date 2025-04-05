@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "windows基础知识.md",
+                "file": "温铁军对谈卢麟元.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "windows基础知识"
+              "title": "温铁军对谈卢麟元"
             }
           }
         ],
@@ -208,8 +208,9 @@
   },
   "active": "4a980be5dc5a2826",
   "lastOpenFiles": [
-    "node.js.md",
     "windows基础知识.md",
+    "温铁军对谈卢麟元.md",
+    "node.js.md",
     "cpp知识.md",
     "linux操作基础知识.md",
     "Pasted image 20250331153646.png",
