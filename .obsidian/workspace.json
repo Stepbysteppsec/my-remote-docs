@@ -20,8 +20,24 @@
               "icon": "lucide-file",
               "title": "2025-04-06"
             }
+          },
+          {
+            "id": "4fb4ecc820b41e45",
+            "type": "leaf",
+            "state": {
+              "type": "split-diff-view",
+              "state": {
+                "aFile": "qt 基础知识.md",
+                "bFile": "qt 基础知识.md",
+                "aRef": "HEAD",
+                "bRef": ""
+              },
+              "icon": "diff",
+              "title": "Diff: qt 基础知识"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -179,11 +195,17 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "b41f394d344edb8a",
+  "active": "4fb4ecc820b41e45",
   "lastOpenFiles": [
-    "操作系统/基础知识.md",
-    "2025-04-06.md",
     "qt 基础知识.md",
+    "Pasted image 20250331153646.png",
+    "conflict-files-obsidian-git.md",
+    "2025-04-06.md",
+    "温铁军对谈卢麟元.md",
+    "windows基础知识.md",
+    "node.js.md",
+    "linux操作基础知识.md",
+    "操作系统/基础知识.md",
     "Untitled 2.canvas",
     "cpp知识.md",
     "Untitled 1.canvas",
@@ -203,9 +225,7 @@
     "Pasted image 20250112210848.png",
     "Pasted image 20250112230731.png",
     "Pasted image 20250112230832.png",
-    "Pasted image 20250112230842.png",
     "chapter 1 review question.md",
-    "conflict-files-obsidian-git.md",
     "hello  the future.md",
     "2025-01-07.md",
     "cs144.md",
