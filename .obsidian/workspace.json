@@ -11,10 +11,12 @@
             "id": "277495b3124c9199",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
+              "type": "image",
+              "state": {
+                "file": "截屏 2025-03-23 下午3.46.06.jpeg"
+              },
+              "icon": "lucide-image",
+              "title": "截屏 2025-03-23 下午3.46.06"
             }
           }
         ]
@@ -175,8 +177,10 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "4fb6ab0025c37e14",
+  "active": "277495b3124c9199",
   "lastOpenFiles": [
+    "摄影艺术全套.md",
+    "截屏 2025-03-23 下午3.46.06.jpeg",
     "attachments/IMG_4434.jpg",
     "attachments/IMG_4434 1.jpg",
     "attachments/121736694417_.pic.jpg",
@@ -186,11 +190,8 @@
     "attachments/Pasted image 20250331153646.png",
     "attachments/Pasted image 20250320224237.png",
     "attachments/Pasted image 20250112230842.png",
-    "attachments/Pasted image 20250112230832.png",
-    "attachments/Pasted image 20250112230731.png",
     "attachments",
     "2025-04-06.md",
-    "摄影艺术全套.md",
     "hello  the future.md",
     "english learning.md",
     "linux操作基础知识.md",
