@@ -39,12 +39,14 @@
             "id": "4a980be5dc5a2826",
             "type": "leaf",
             "state": {
-              "type": "image",
+              "type": "markdown",
               "state": {
-                "file": "attachments/Pasted image 20250112230842.png"
+                "file": "cpp知识.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-image",
-              "title": "Pasted image 20250112230842"
+              "icon": "lucide-file",
+              "title": "cpp知识"
             }
           }
         ],
@@ -206,6 +208,7 @@
   },
   "active": "4a980be5dc5a2826",
   "lastOpenFiles": [
+    "attachments/Pasted image 20250112230842.png",
     "attachments/Pasted image 20250112210848.png",
     "cpp知识.md",
     "attachments/Pasted image 20250407094345.png",
@@ -222,7 +225,6 @@
     "attachments/Pasted image 20250405082514.png",
     "attachments/Pasted image 20250331153646.png",
     "attachments/Pasted image 20250320224237.png",
-    "attachments/Pasted image 20250112230842.png",
     "attachments/Pasted image 20250112230832.png",
     "attachments/Pasted image 20250112230731.png",
     "attachments",
