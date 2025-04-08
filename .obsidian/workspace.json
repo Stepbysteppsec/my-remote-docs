@@ -48,9 +48,37 @@
               "icon": "diff",
               "title": "Diff: workspace.json"
             }
+          },
+          {
+            "id": "d9fea1e72a7d52c8",
+            "type": "leaf",
+            "state": {
+              "type": "split-diff-view",
+              "state": {
+                "aFile": "conflict-files-obsidian-git.md",
+                "bFile": "conflict-files-obsidian-git.md",
+                "aRef": ""
+              },
+              "icon": "diff",
+              "title": "Diff: conflict-files-obsidian-git"
+            }
+          },
+          {
+            "id": "062010e0f0fb2323",
+            "type": "leaf",
+            "state": {
+              "type": "split-diff-view",
+              "state": {
+                "aFile": ".obsidian/workspace.json",
+                "bFile": ".obsidian/workspace.json",
+                "aRef": ""
+              },
+              "icon": "diff",
+              "title": "Diff: workspace.json"
+            }
           }
         ],
-        "currentTab": 2
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -206,8 +234,11 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "4a980be5dc5a2826",
+  "active": "062010e0f0fb2323",
   "lastOpenFiles": [
+    "conflict-files-obsidian-git.md",
+    "vscode.md",
+    "attachments/Pasted image 20250407224411.png",
     "cpp知识.md",
     "摄影艺术全套.md",
     "截屏 2025-03-23 下午3.46.06.jpeg",
@@ -226,14 +257,12 @@
     "attachments/Pasted image 20250331153646.png",
     "attachments/Pasted image 20250320224237.png",
     "attachments/Pasted image 20250112230832.png",
-    "attachments/Pasted image 20250112230731.png",
     "attachments",
     "windows基础知识.md",
     "node.js.md",
     "linux操作基础知识.md",
     "操作系统/基础知识.md",
     "qt 基础知识.md",
-    "conflict-files-obsidian-git.md",
     "hello  the future.md",
     "english learning.md",
     "todolist.md",
