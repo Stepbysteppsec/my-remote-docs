@@ -11,10 +11,14 @@
             "id": "d44a7bbc0a83e745",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
+              "type": "split-diff-view",
+              "state": {
+                "aFile": ".obsidian/workspace.json",
+                "bFile": ".obsidian/workspace.json",
+                "aRef": ""
+              },
+              "icon": "diff",
+              "title": "Diff: workspace.json"
             }
           }
         ]
@@ -173,8 +177,9 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "8f15b3a821231390",
+  "active": "d44a7bbc0a83e745",
   "lastOpenFiles": [
+    "操作系统/基础知识.md",
     "摄影艺术全套.md",
     "conflict-files-obsidian-git.md",
     "vscode.md",
@@ -200,7 +205,6 @@
     "windows基础知识.md",
     "node.js.md",
     "linux操作基础知识.md",
-    "操作系统/基础知识.md",
     "qt 基础知识.md",
     "hello  the future.md",
     "english learning.md",
