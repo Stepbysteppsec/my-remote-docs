@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "cf139d934d544d31",
+        "id": "a8f435ee82a9abf3",
         "type": "tabs",
         "children": [
           {
-            "id": "d44a7bbc0a83e745",
+            "id": "2653afc178f54a2c",
             "type": "leaf",
             "state": {
-              "type": "split-diff-view",
+              "type": "markdown",
               "state": {
-                "aFile": ".obsidian/workspace.json",
-                "bFile": ".obsidian/workspace.json",
-                "aRef": ""
+                "file": "english learning.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "diff",
-              "title": "Diff: workspace.json"
+              "icon": "lucide-file",
+              "title": "english learning"
             }
           }
         ]
@@ -177,8 +177,9 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "d44a7bbc0a83e745",
+  "active": "2653afc178f54a2c",
   "lastOpenFiles": [
+    "温铁军对谈卢麟元.md",
     "操作系统/基础知识.md",
     "摄影艺术全套.md",
     "conflict-files-obsidian-git.md",
@@ -186,7 +187,6 @@
     "attachments/Pasted image 20250407224411.png",
     "cpp知识.md",
     "截屏 2025-03-23 下午3.46.06.jpeg",
-    "温铁军对谈卢麟元.md",
     "attachments/Pasted image 20250112230842.png",
     "attachments/Pasted image 20250112210848.png",
     "attachments/Pasted image 20250407094345.png",
