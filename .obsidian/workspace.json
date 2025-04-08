@@ -4,81 +4,20 @@
     "type": "split",
     "children": [
       {
-        "id": "95416b6e9865de8b",
+        "id": "cf139d934d544d31",
         "type": "tabs",
         "children": [
           {
-            "id": "c024d1983d37ef44",
+            "id": "d44a7bbc0a83e745",
             "type": "leaf",
             "state": {
-              "type": "split-diff-view",
-              "state": {
-                "aFile": ".obsidian/workspace.json",
-                "bFile": ".obsidian/workspace.json",
-                "aRef": ""
-              },
-              "icon": "diff",
-              "title": "Diff: workspace.json"
-            }
-          },
-          {
-            "id": "2c6e3cba3ec26721",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "摄影艺术全套.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "摄影艺术全套"
-            }
-          },
-          {
-            "id": "4a980be5dc5a2826",
-            "type": "leaf",
-            "state": {
-              "type": "split-diff-view",
-              "state": {
-                "aFile": ".obsidian/workspace.json",
-                "bFile": ".obsidian/workspace.json",
-                "aRef": ""
-              },
-              "icon": "diff",
-              "title": "Diff: workspace.json"
-            }
-          },
-          {
-            "id": "d9fea1e72a7d52c8",
-            "type": "leaf",
-            "state": {
-              "type": "split-diff-view",
-              "state": {
-                "aFile": "conflict-files-obsidian-git.md",
-                "bFile": "conflict-files-obsidian-git.md",
-                "aRef": ""
-              },
-              "icon": "diff",
-              "title": "Diff: conflict-files-obsidian-git"
-            }
-          },
-          {
-            "id": "062010e0f0fb2323",
-            "type": "leaf",
-            "state": {
-              "type": "split-diff-view",
-              "state": {
-                "aFile": ".obsidian/workspace.json",
-                "bFile": ".obsidian/workspace.json",
-                "aRef": ""
-              },
-              "icon": "diff",
-              "title": "Diff: workspace.json"
+              "title": "New tab"
             }
           }
-        ],
-        "currentTab": 4
+        ]
       }
     ],
     "direction": "vertical"
@@ -234,13 +173,13 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "062010e0f0fb2323",
+  "active": "8f15b3a821231390",
   "lastOpenFiles": [
+    "摄影艺术全套.md",
     "conflict-files-obsidian-git.md",
     "vscode.md",
     "attachments/Pasted image 20250407224411.png",
     "cpp知识.md",
-    "摄影艺术全套.md",
     "截屏 2025-03-23 下午3.46.06.jpeg",
     "温铁军对谈卢麟元.md",
     "attachments/Pasted image 20250112230842.png",
