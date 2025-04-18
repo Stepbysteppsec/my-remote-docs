@@ -537,3 +537,20 @@ int Math::Calculator::add(int a, int b) {
 限定符帮助编译器准确理解代码中各个标识符的具体位置和含义，是C++面向对象和命名空间机制的重要语法元素。
 
 ![[Pasted image 20250407094345.png]]
+
+``` cpp
+QByteArray data1;
+for(j=0; j<msg_len; j++) {
+    data1[j] = data[i+6+j]; // Problem here
+}
+```
+
+因为data1 没有resize边界，所以可能在for循环中直接访问超过边界，引起未定义行为。
+
+``` cpp
+QByteArray data1(msg_len, 0); // Create array of size msg_len filled with zeros
+for(j=0; j<msg_len; j++) {
+    data1[j] = data[i+6+j]; // Now this is safe
+}
+```
+
