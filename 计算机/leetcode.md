@@ -36,6 +36,10 @@ dummy_head->next = head;
 ListNode* cur = nullptr; 
 while(int n){
     cur = cur->next
-    n
+    n--;
+}
+if(!cur->next){
+	cur = cur->next->next;
 }
 ```
+
