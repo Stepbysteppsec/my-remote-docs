@@ -1,3 +1,10 @@
+### 链表类型
+单链表
+双链表
+循环链表
+
+### 链表存储方式
+
 #### 单链表节点定义
 ```cpp
 struct ListNode{
@@ -8,7 +15,7 @@ ListNode(int x):data(x),next(null){} //链表构造函数
 ```
 
 通过自定义构造函数初始化节点
-
 ```cpp
 ListNode head = new ListNode(0);
 ```
+
