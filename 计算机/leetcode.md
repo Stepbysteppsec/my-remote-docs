@@ -31,15 +31,17 @@ head->next = node;
 ##### 删
 ```cpp
 // dummy head
-ListNode dummy_head = new ListNode();
-dummy_head->next = head;
-ListNode* cur = nullptr; 
-while(int n){
-    cur = cur->next
-    n--;
-}
-if(!cur->next){
-	cur = cur->next->next;
+ListNode * remove(int x,ListNode *head){
+	ListNode dummy_head = new ListNode(0);
+	dummy_head->next = head;
+    ListNode* cur = dummy_head; 
+    while(cur->next != nullptr && cur->next->next != nullptr){
+	    if(cur->next->data == x){
+		    cur = cur->next->next;
+		}
+	    else cur = cur->next;
+    }
+    return head;
 }
 ```
 
