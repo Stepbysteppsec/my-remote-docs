@@ -31,17 +31,16 @@ head->next = node;
 ##### 删
 ```cpp
 // dummy head
-ListNode * remove(int x,ListNode *head){
-	ListNode dummy_head = new ListNode(0);
-	dummy_head->next = head;
-    ListNode* cur = dummy_head; 
-    while(cur->next != nullptr && cur->next->next != nullptr){
-	    if(cur->next->data == x){
+	//只要检查cur->next 就行了，保证cur->next->data 不会引起未定义行为。
+    while(cur->next != nullptr ){
+	    
+	    //需要记住要被删除的节点，否则内存泄露。
+		    ListNode tmp = cur->next;
 		    cur = cur->next->next;
-		}
-	    else cur = cur->next;
-    }
-    return head;
-}
+		    delete tmp;
+		
+    //有可能头节点已经删除，直接返回会引起未定义行为
+    head = dummy->next;
+
 ```
 
