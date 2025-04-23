@@ -44,3 +44,16 @@ head->next = node;
 
 ```
 
+备左则右寡，备右则左寡，无所不备则无所不寡。
+学习也要2，8分。然后白板回忆时要内容全，这时候直接对照书就行了。
+
+
+#### 递归删
+
+        // 递归处理，如果当前节点是待删除点，直接使用新节点指向下一个节点。
+        if (head->val == val) {
+            ListNode* newHead = removeElements(head->next, val);
+            delete head;
+            return newHead;
+        }
+
