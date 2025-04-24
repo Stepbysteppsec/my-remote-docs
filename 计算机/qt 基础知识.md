@@ -86,3 +86,10 @@ void P2pUdpWorker::onEntity1DataReady() {
 ### 错误信息特征
 
 错误信息 `undefined reference to 'P2pUdpWorker::onStatusReportTimer()'` 是典型的链接错误提示。在编译流程中，编译器和链接器的职责不同，编译器负责将源代码转换为目标文件，而链接器负责将多个目标文件以及库文件组合成一个可执行文件。当出现 `undefined reference` 这类错误时，意味着链接器在尝试将各个部分组合在一起时，找不到某个符号（这里是函数 `P2pUdpWorker::onStatusReportTimer()` 的定义）的实现，所以这是链接阶段特有的错误类型。
+
+
+
+
+### 快捷键
+
+ctrl+shift+z 撤销刚刚的撤销
