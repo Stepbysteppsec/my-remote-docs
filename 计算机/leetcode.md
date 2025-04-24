@@ -56,4 +56,3 @@ head->next = node;
             delete head;
             return newHead;
         }
-
