@@ -93,3 +93,8 @@ void P2pUdpWorker::onEntity1DataReady() {
 ### 快捷键
 
 ctrl+shift+z 撤销刚刚的撤销
+
+
+### qsettings
+
+qsettings 的错误说明 在使用别人的库之前 最保险的办法 就是找示例跟着写。 先了解示例。
