@@ -44,10 +44,6 @@ head->next = node;
 
 ```
 
-备左则右寡，备右则左寡，无所不备则无所不寡。
-学习也要2，8分。然后白板回忆时要内容全，这时候直接对照书就行了。
-
-
 #### 递归删
 
         // 递归处理，如果当前节点是待删除点，直接使用新节点指向下一个节点。
@@ -65,7 +61,16 @@ void adHead(int val){
 	
 }
 ```
+### 链表长度
+如果index 为链表长度，那index == _size
 
+```cpp
+if(index > size) return ;
+if(index < 0 ) return;
+while(index--){
+
+}
+```
 ### ListNode* 和 ListNode
 1. **内存分配位置不同**：
     - `LinkedNode* newNode = new LinkedNode(val)`：在堆(heap)上分配内存，这块内存在函数结束后仍然存在
