@@ -71,6 +71,13 @@ while(index--){
 
 }
 ```
+
+### 链表删除
+```cpp
+delete tmp;
+tmp = nullptr;
+_size--;
+```
 ### ListNode* 和 ListNode
 1. **内存分配位置不同**：
     - `LinkedNode* newNode = new LinkedNode(val)`：在堆(heap)上分配内存，这块内存在函数结束后仍然存在
