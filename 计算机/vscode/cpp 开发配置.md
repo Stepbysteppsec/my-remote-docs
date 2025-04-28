@@ -103,3 +103,164 @@ ctrl+shift +B
 - Maven：Java项目的构建工具
 - .NET Core：微软的跨平台开发框架
 - Others：适合像C++这样使用g++/gcc编译的项
+
+## tasks.json 常见选项解析
+
+### 基本结构
+
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            // 任务配置...
+        }
+    ]
+}
+```
+
+### 主要选项说明
+
+1. **label** - 任务的名称，在 VS Code 界面中显示
+    
+    ```json
+    "label": "build"
+    ```
+    
+2. **type** - 任务类型，常见的有：
+    
+    - `shell`: 在shell中执行命令
+    - `process`: 直接启动进程
+    
+    ```json
+    "type": "shell"
+    ```
+    
+3. **command** - 要执行的命令
+    
+    ```json
+    "command": "g++"
+    ```
+    
+4. **args** - 命令行参数，是一个字符串数组
+    
+    ```json
+    "args": ["-g", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}"]
+    ```
+    
+5. **group** - 任务组，定义任务的类别和默认行为
+    
+    ```json
+    "group": {
+        "kind": "build",
+        "isDefault": true
+    }
+    ```
+    
+    常见的组类型：
+    
+    - `build`: 构建任务
+    - `test`: 测试任务
+    - `none`: 不分类
+6. **problemMatcher** - 用于从输出中解析问题（错误、警告）
+    
+    ```json
+    "problemMatcher": ["$gcc"]
+    ```
+    
+    常见的内置 matcher:
+    
+    - `$gcc`: GCC编译器
+    - `$msCompile`: MSVC编译器
+    - `$tsc`: TypeScript
+    - `$eslint-compact`: ESLint
+7. **presentation** - 控制任务输出的显示方式
+    
+    ```json
+    "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+    }
+    ```
+    
+8. **options** - 设置执行环境选项
+    
+    ```json
+    "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+            "PATH": "${env:PATH}:/additional/path"
+        }
+    }
+    ```
+    
+9. **dependsOn** - 定义任务依赖，会在当前任务执行前执行
+    
+    ```json
+    "dependsOn": ["otherTaskLabel"]
+    ```
+    
+10. **runOptions** - 运行选项
+    
+    ```json
+    "runOptions": {
+        "runOn": "folderOpen",
+        "instanceLimit": 1
+    }
+    ```
+    
+
+### 常用变量
+
+VS Code 提供了许多预定义变量用于任务配置：
+
+- `${workspaceFolder}` - 工作区文件夹路径
+- `${file}` - 当前打开的文件完整路径
+- `${fileBasename}` - 当前文件的文件名（含扩展名）
+- `${fileBasenameNoExtension}` - 当前文件名（不含扩展名）
+- `${fileDirname}` - 当前文件所在的文件夹路径
+- `${fileExtname}` - 当前文件的扩展名
+- `${cwd}` - 任务启动时的工作目录
+- `${env:NAME}` - 环境变量
+
+### C++ 编译任务示例
+
+```json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "编译C++",
+            "type": "shell", 
+            "command": "g++",
+            "args": [
+                "-std=c++17",
+                "-Wall",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": ["$gcc"]
+        }
+    ]
+}
+```
+
+这个配置创建了一个默认构建任务，它使用g++编译器，带有C++17标准、调试信息和警告选项，编译当前打开的文件并输出到同一目录下。
+
+希望这些信息对您有所帮助！如果您有任何特定的tasks.json配置需求，请随时告诉我。
