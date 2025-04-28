@@ -102,4 +102,4 @@ ctrl+shift +B
 - MSBuild：用于Visual Studio和C#/.NET项目
 - Maven：Java项目的构建工具
 - .NET Core：微软的跨平台开发框架
-- Others：适合像C++这样使用g++/gcc编译的项目
+- Others：适合像C++这样使用g++/gcc编译的项
