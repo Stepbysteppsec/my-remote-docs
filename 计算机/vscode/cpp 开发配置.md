@@ -95,3 +95,11 @@
 - 库路径可以用 `-L` 选项指定
 
 这两个文件的配置会帮你自动化编译和调试流程，让C++开发更便捷。
+
+
+
+ctrl+shift +B 
+- MSBuild：用于Visual Studio和C#/.NET项目
+- Maven：Java项目的构建工具
+- .NET Core：微软的跨平台开发框架
+- Others：适合像C++这样使用g++/gcc编译的项目
