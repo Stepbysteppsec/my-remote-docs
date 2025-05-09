@@ -34,3 +34,7 @@
 下方滑块：选择亮度起始值brightness_black，低于该亮度的像素值的亮度都被映射为该亮度值。    f^-1(f(brightness))   = brightness_black,brightness < brightness_black  
 选中亮度值低于某个值的所有像素点，把这些点的亮度值统一映射为选中的亮度值
 
+上方滑块 最低亮度值被映射为上方滑块的指定值
+
+
+#### ll
