@@ -98,3 +98,157 @@ ctrl+shift+z 撤销刚刚的撤销
 ### qsettings
 
 qsettings 的错误说明 在使用别人的库之前 最保险的办法 就是找示例跟着写。 先了解示例。
+
+
+
+#### qt库安装
+我理解您需要解决Qt项目的依赖问题，并且是在离线环境中。让我为您提供解决方案。
+
+## 在银河麒麟ARM64上处理Qt项目的离线安装
+
+如果您需要解决Qt依赖问题以编译或运行Qt项目，您应该处理以下方面：
+
+### 1. 安装基础Qt库
+
+从您提供的列表中，对于基础Qt5库，您需要：
+
+- `qtbase-opensource-src` (Qt基础源码包)
+
+### 2. 编译安装步骤
+
+1. 首先解压源码包：
+    
+    ```bash
+    tar -xf qtbase-opensource-src-5.11.3.tar.xz
+    cd qtbase-opensource-src-5.11.3
+    ```
+    
+2. 配置并编译：
+    
+    ```bash
+    # 创建构建目录
+    mkdir build && cd build
+    
+    # 配置Qt (根据需要调整选项)
+    ../configure -prefix /usr/local/qt5 -opensource -confirm-license
+    
+    # 编译
+    make -j4  # 使用4个CPU核心编译，根据您的机器调整
+    
+    # 安装
+    sudo make install
+    ```
+    
+3. 设置环境变量：
+    
+    ```bash
+    # 编辑.bashrc文件
+    echo 'export PATH=/usr/local/qt5/bin:$PATH' >> ~/.bashrc
+    echo 'export LD_LIBRARY_PATH=/usr/local/qt5/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
+    source ~/.bashrc
+    ```
+    
+
+### 3. 处理特定模块的依赖
+
+如果您的项目需要特定的Qt模块（如QtSerialPort），您可能还需要编译其他模块：
+
+1. 解决QtSerialPort依赖 (示例)：
+    
+    ```bash
+    # 在编译完qtbase后cd <源码目录>/qtserialportqmakemakesudo make install
+    ```
+    
+
+### 4. 使用预编译的二进制包 (如果有)
+
+如果您能够获取兼容您银河麒麟系统的预编译Qt二进制包，这将是更简单的方法：
+
+1. 确认所有必要的.deb包
+2. 使用dpkg安装它们：
+    
+    ```bash
+    sudo dpkg -i *.deb
+    ```
+    
+3. 修复可能的依赖问题：
+    
+    ```bash
+    sudo apt --fix-broken install  # 如果有本地依赖库
+    ```
+    
+
+### 5. 离线项目编译配置
+
+编译您自己的Qt项目时，确保使用正确的qmake路径：
+
+```bash
+/usr/local/qt5/bin/qmake  # 如果是从源码安装的
+# 或
+qmake  # 如果环境变量已经设置好
+```
+
+如果您可以提供更多关于您要解决的具体Qt项目的信息，我可以给您更有针对性的建议。
+
+
+#### 安装包
+## 虚拟依赖包工作原理详解
+
+这个脚本创建了一个"虚拟依赖包"，用来解决软件包依赖问题。让我详细解释它是如何工作的：
+
+### 1. 原理概述
+
+在Debian/Ubuntu软件包管理系统中，有一个重要的概念叫"Provides"（提供）。当软件包A声明它"提供"软件包B时，任何依赖于B的软件包也可以通过安装A来满足依赖关系。
+
+### 2. 脚本步骤解析
+
+```bash
+# 创建目录结构
+mkdir -p ./qtbase-abi-5-11-3-fix/DEBIAN
+```
+
+- 这一行创建了一个名为"qtbase-abi-5-11-3-fix"的目录，以及其中的"DEBIAN"子目录，这是Debian软件包的标准结构。
+
+```bash
+# 创建控制文件
+echo 'Package: qtbase-abi-5-11-3-fix
+Version: 1.0
+Section: custom
+Priority: optional
+Provides: qtbase-abi-5-11-3    # 关键行！声明提供qtbase-abi-5-11-3
+Depends: libqt5core5a          # 自己依赖于libqt5core5a
+Architecture: arm64
+Essential: no
+Installed-Size: 0
+Maintainer: custom
+Description: Fix lack of qtbase-abi-5-11-3 in Kylin OS
+' > ./qtbase-abi-5-11-3-fix/DEBIAN/control
+```
+
+- 这部分创建了"control"文件，定义了软件包的元数据
+- 最关键的是`Provides: qtbase-abi-5-11-3`行，告诉包管理器该软件包提供"qtbase-abi-5-11-3"功能
+- `Depends: libqt5core5a`表示该包依赖于libqt5core5a
+
+```bash
+# 构建Debian包
+dpkg-deb --build ./qtbase-abi-5-11-3-fix
+```
+
+- 这一行使用dpkg-deb工具将目录打包成一个.deb文件
+
+### 3. 工作流程
+
+1. 假设您要安装软件包X，它依赖于qtbase-abi-5-11-3
+2. 系统中没有qtbase-abi-5-11-3，所以安装会失败
+3. 您安装这个虚拟依赖包(qtbase-abi-5-11-3-fix)
+4. 包管理器认为qtbase-abi-5-11-3已经被"提供"了
+5. 现在尝试安装X，包管理器不再抱怨缺少qtbase-abi-5-11-3
+
+### 4. 为什么有效
+
+- 在许多情况下，qtbase-abi-5-11-3仅仅是一个"版本标识符"，表示存在特定版本的Qt库的ABI(应用程序二进制接口)
+- 实际功能已经包含在libqt5core5a等实际的库文件中
+- 这个虚拟包没有实际内容(0字节)，只是声明提供了特定功能
+- 它自己依赖于libqt5core5a确保实际库被安装
+
+这种方法特别适合解决那些形式上的依赖关系，尤其是当您确定系统中已经有了所需的功能，只是缺少特定的标识符软件包。这是一种"欺骗"包管理系统的巧妙方法，在离线环境中非常有用。
