@@ -63,3 +63,32 @@ apt-get download git &
 因此，你通常会先 `enable` 一个你希望长期运行的服务，然后 `start` 它以使其立即生效，而无需重启系统。
 
 为了更方便，`systemd` 也支持一个组合选项：`sudo systemctl enable --now ssh`，这个命令会同时启用服务并在当前会话中启动它。
+
+gcc --version | head -1  # 只看第一行，通常是版本号
+
+
+**`ldd --version`**:
+
+- **作用**：`ldd` 命令用于打印程序所需的 **共享库（shared libraries）**。共享库就像程序的“工具箱”，许多程序运行时需要依赖它们。`ldd --version` 就是查看 `ldd` 工具本身的Glibc版本。
+- **常见用法**：
+    
+    Bash
+    
+    ```
+    ldd /bin/ls  # 查看 `ls` 命令依赖哪些共享库
+    ldd --version | head -1  # 查看 ldd 工具的版本
+    ```
+软件包管理工具 `apt-cache`
+
+
+wget https://example.com/file.zip  # 下载一个文件
+wget -O newname.zip https://example.com/file.zip  # 下载文件并重命名
+wget -q --spider "https://boostorg.jfrog.io/..."  # `-q` 是静默模式，不显示下载进度；`--spider` 是只检查 URL 是否存在，不实际下载。
+
+
+**`tar -xzf <file.tar.gz>`**:
+
+- **作用**：`tar` 命令是 Linux 中常用的压缩和解压缩工具。`tar -xzf` 用于解压 `.tar.gz` 格式的压缩包。
+    - `-x`：解压缩
+    - `-z`：通过 gzip 过滤器处理（因为是 `.gz` 格式）
+    - `-f`：指定要操作的文件
