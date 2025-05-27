@@ -79,3 +79,71 @@
 
 #### 结构设计：
 - zk_interface: 负责zk协议的数据结构实现，以及这些数据结构的方法，创建方法和解析方法
+
+
+
+ubuntu16.04 虚拟机镜像 密码 1234
+
+
+
+FROM ubuntu:20.04
+
+# 避免交互式安装
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 安装开发工具
+
+RUN apt-get update && apt-get install -y \
+
+build-essential \
+
+cmake \
+
+gdb \
+
+git \
+
+curl \
+
+wget \
+
+vim \
+
+nano \
+
+pkg-config \
+
+valgrind \
+
+&& rm -rf /var/lib/apt/lists/*
+
+# 创建开发用户
+
+RUN useradd -m -s /bin/bash developer && \
+
+usermod -aG sudo developer && \
+
+echo 'developer:developer' | chpasswd && \
+
+echo 'developer ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# 设置工作目录
+
+WORKDIR /workspace
+
+# 切换到开发用户
+
+USER developer
+
+# 设置编译环境变量（兼容性优先）
+
+ENV CXXFLAGS="-std=c++11"
+
+ENV CC=gcc
+
+ENV CXX=g++
+
+这是我的docker file文件 每次我进去这个工程 都提示我要安装 插件 但是安装完以后 当我连接这些容器 时 又提示我 os版本太老了 但是我觉得 不太对，因为我的镜像是20.04的不可能是这个原因 我的理解就是连接时 连接到了错误的容器 上 但是好像工程下的有两个配置文件 一个devcontainer.json 一个dockerfile 我现在需要弄清楚一些基本的概念 ， 你来告诉我这两个配置文件 是干嘛用的 ，谢谢 
+
+而且由于我想在这个docker里使用交叉编译
