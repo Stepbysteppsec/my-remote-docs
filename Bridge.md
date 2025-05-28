@@ -748,3 +748,258 @@ public:
 然后我们可以讨论 `interfaces/zk_interface/` 如何使用它，以及它如何与I/O线程和工作线程池的任务队列交互。
 
 您觉得这个方向和细化程度如何？我们可以先针对 `protocols/zk_protocol/` 把第7点“核心对外接口”再具体化一下吗？例如，您ZK协议中最重要的几条信令消息是什么？它们包含哪些关键字段？
+
+
+
+
+
+
+好的，这绝对是一个关键的里程碑！现在，我们将把之前所有关于 Bridge 系统架构的讨论，包括模块划分、核心职责、I/O模型、多线程、协议处理细节，以及最新加入的**主备容灾**考量，整合到一份结构设计文档中。
+
+这份文档将作为您后续详细设计和编码的蓝图。
+
+---
+
+## Bridge 系统结构设计说明文档 V1.0 🌉
+
+文档版本： 1.0
+
+日期： 2025-05-27 (根据您当前时间调整)
+
+作者： (您的名字/团队)
+
+### 1. 引言 📜
+
+#### 1.1. 项目概述
+
+Bridge 系统是一个中间件程序，旨在作为 ZK 实体（最多10个，每个ZK使用单一固定端口进行信令和媒体通信）与单一 TMS 系统之间的通信桥梁。它负责在两者之间进行信令交互的协议适配和媒体流的转发。系统设计目标是支持最多200路并发会话，并具备主备容灾能力。
+
+#### 1.2. 设计目标
+
+- **功能性：** 准确实现ZK与TMS间的信令转换和媒体中继。
+- **性能：** 高效处理200路并发会话，低延迟。
+- **可靠性：** 系统稳定运行，具备主备容灾能力，减少单点故障时间。
+- **可维护性：** 模块化设计，代码清晰，易于理解、修改和扩展。
+- **可扩展性：** 架构上为未来可能的会话数量增长或功能增强留有余地。
+
+#### 1.3. 关键约束
+
+- C++11 作为开发语言标准。
+- 目标运行环境：麒麟服务器操作系统 (Linux 4.4.131 aarch64, GCC 5.4.0)。
+- ZK侧通信：每个ZK使用一个固定端口与Bridge的对应ZK监听端口进行所有信令及所有会话的媒体数据交互；Bridge向ZK发送媒体时，使用为该会话分配的独立源端口。
+- TMS侧通信：协议待明确（假设TCP信令，UDP媒体）。
+
+---
+
+### 2. 系统总体架构 🏗️
+
+Bridge 系统采用**模块化、事件驱动、I/O复用（基于epoll或等效机制）和多线程（I/O线程 + 工作线程池）**的架构。
+
+#### 2.1. 架构图 (概念)
+
+```
++---------------------+      +-----------------------+      +---------------------+
+|     ZK Entities     |<---->|      ZK Interface     |<---->|                     |
+| (10 ZKs, fixed port |      | (10 Listeners for ZK  |      |                     |
+|  for Sig & Media In)|      |  Sig/Media, Demux,    |      |   Coordinator /   |
++---------------------+      |  Reliability Handler, |      |   Event Router    |      +-------------------+
+                             |  Protocol Util)       |      |                     |----->|  Session Module   |
+                             +-----------+-----------+      +---------------------+      |<-----| (SessionManager,  |
+                                         ^                                               |      |  Session Objects) |
+                                         | (Tasks to Worker Pool)                        |      +-------------------+
+                                         v                                               |                |
++---------------------+      +-----------+-----------+      +-----------------------+  |                | (Config MediaRelay)
+|     TMS System      |<---->|     TMS Interface     |<---->|   Worker Thread Pool  |  |                v
+| (TCP Sig, N UDP     |      | (TCP Conn, N UDP Listen|      | (Executes Session Logic,|  |      +-------------------+
+|  Media In)          |      |  for TMS Media, Proto |      |  Coordinator, etc.)   |<---------->| MediaRelay Module |
++---------------------+      |  Util)                |      +-----------------------+  |      |(Fast Fwd Table,   |
+                             +-----------+-----------+                                   |      | Header Manip.)    |
+                                         ^                                               |      +-------------------+
+                                         | (Tasks to Worker Pool)                        |
+                                         v                                               |  ^
+                             +-----------------------+                                   |  | (Alloc/Release)
+                             | I/O Threads &         |                                   v  |
+                             | Event Loop (epoll)    |      +-----------------------+     +-----------------------+
+                             +-----------------------+      | Communication Layer   |<--->|    Protocol Layer     |
+                                     ^       ^              | (Async Sockets)       |     | (ZK/TMS Parsers/Fmts) |
+                                     |       |              +-----------------------+     +-----------------------+
+                                     |       |
+                                     |       +-------------------------------------------->+    Port Manager       |
+                                     |                                                     | (UDP Port Pool)       |
+                                     +----------------------------------------------------->+-----------------------+
+
++-----------------------+     +-----------------------+     +-----------------------+
+| Configuration Manager |     |     Logging (spdlog)  |     | Redis Client Interface|
+| (JSON for config)     |     +-----------------------+     | (for HA State Sync)   |
++-----------------------+                                   +-----------------------+
+                                                                      ^
+                                                                      | (HA Heartbeat & State)
+                                                                      v
+                                                            +-----------------------+
+                                                            | HA Switch Logic Module|
+                                                            | (e.g., ms_switch)     |
+                                                            +-----------------------+
+```
+
+#### 2.2. 线程模型
+
+- **I/O 线程 (少量)：**
+    - 运行核心I/O复用循环 (如 `epoll_wait`)。
+    - 负责所有Socket的非阻塞读写。
+    - 进行最小化解析以识别消息来源和基本类型。
+    - 将任务分发到工作线程池。
+    - 可能直接处理极低延迟的媒体转发（如果包头操作简单）。
+- **工作线程池 (固定数量)：**
+    - 执行所有核心业务逻辑：`Session`状态机、`Coordinator`路由、配置读取、端口分配、`MediaRelay`配置。
+    - 处理需要CPU计算或可能短时阻塞（非网络I/O）的操作。
+- **(可选) 专用线程：** TMS心跳、定时清理、HA状态监控等。
+
+---
+
+### 3. 模块详细设计 🧩
+
+#### 3.1. `common/` - 通用基础模块
+
+- **`common/communication/` - 通信层**
+    - **概述：** 提供底层的、异步的、平台无关（或已适配目标平台）的Socket操作封装。
+    - **主要职责：** 封装异步UDP Socket的创建、绑定、收发；封装异步TCP客户端/服务器Socket操作。与I/O事件循环集成。
+    - **核心接口：** `AsyncUDPSocket::async_receive_from()`, `AsyncUDPSocket::async_send_to()`, `AsyncTCPClient::async_connect()`, `AsyncTCPClient::async_send()` 等。
+    - **主要数据结构：** Socket描述符、缓冲区、回调函数对象。
+- **`common/task_queue/` - 任务队列**
+    - **概述：** 实现线程安全的任务队列，用于I/O线程与工作线程池之间的任务传递。
+    - **核心接口：** `ConcurrentQueue::push(Task)`, `ConcurrentQueue::wait_and_pop()`。
+
+#### 3.2. `protocols/` - 协议层
+
+- **`protocols/zk_protocol/` - ZK协议处理**
+    - **概述：** 定义ZK协议消息的C++数据结构，提供纯粹的编解码功能（字节流 <-> C++结构体），处理字节序。**不包含自定义可靠传输的状态逻辑。**
+    - **主要职责：**
+        - 定义 `CommonHeader` (序列号、ACK号、标志位、源/目标实体ID、信息单元数量)。
+        - 定义 `InformationUnitType` 枚举。
+        - 定义每种 `InformationUnitType` 对应的载荷结构体 (`XxxIU`)。
+        - 定义顶层已解析ZK UDP包结构体 `ParsedZkUdpPacket { CommonHeader header; std::vector<std::shared_ptr<BaseIU>> information_units; }` (其中 `BaseIU` 为信息单元的基类，具体单元为其派生类，以适应C++11下 `std::variant` 的缺失)。
+    - **核心接口：**
+        - `ZkProtocol::Parser::decode_common_header(buffer, len)`
+        - `ZkProtocol::Parser::decode_information_unit_payload(buffer, len, type, BaseIU*& out_unit)` (或多个特定类型的解码函数)
+        - `ZkProtocol::Parser::decode_packet(buffer, len, ParsedZkUdpPacket& out_packet)` (顶层解析，循环解析信息单元)
+        - `ZkProtocol::Formatter::encode_packet(const ParsedZkUdpPacket& packet)` (顶层编码)
+        - `ZkProtocol::Formatter::encode_raw_media_for_zk(CommonHeader& header_template, payload, len)` (供MediaRelay使用，可靠性字段由上层填充)
+- **`protocols/tms_protocol/` - TMS协议处理**
+    - **概述与职责：** 同ZK协议模块，但针对TMS协议。
+
+#### 3.3. `interfaces/` - 接口适配层
+
+- **`interfaces/zk_interface/` - ZK接口适配器**
+    - **概述：** 处理与所有ZK实体的网络通信、协议编解码调用、自定义可靠UDP传输机制（如果ZK协议需要），并将业务事件路由到 `Coordinator`。
+    - **主要职责：**
+        - **`ZkListener`:** 管理10个UDP监听Socket（每个ZK一个，接收其信令和所有会话的媒体）。使用`common/communication`和`epoll`。读取数据后，调用`protocols/zk_protocol`初步解析。
+        - **`ZkReliabilityHandler` (如果ZK协议有自定义可靠性):** 基于`CommonHeader`中的序列号/ACK/标志位实现消息的可靠发送（重传、超时）和接收（去重、排序、发送ACK）。它会使用`protocols/zk_protocol`来编解码头部字段，但可靠性状态机在此模块。
+        - **内容分发：** 解析ZK包头（或由`ZkReliabilityHandler`处理后的包）中的“信息单元会话标识”和“信息单元类型”。
+            - 信令类信息单元：封装成任务，通过`Coordinator`提交给`Session`处理。
+            - 媒体类信息单元：直接（或通过高优先级任务）交给`MediaRelay`处理。
+        - **`ZkSender`:** 接收来自`Coordinator`（源自`Session`或`MediaRelay`）的发送指令，调用`ZkReliabilityHandler`（如果需要可靠性）或直接调用`protocols/zk_protocol`格式化消息，并通过`common/communication`发送。
+    - **核心数据结构：** 每个ZK监听Socket的上下文，可靠传输相关的状态表（如发送窗口、重传队列）。
+- **`interfaces/tms_interface/` - TMS接口适配器**
+    - **概述与职责：** 类似ZK接口，但针对TMS。管理与TMS的TCP信令连接（心跳），管理N个UDP Socket接收来自TMS的媒体。
+
+#### 3.4. `core_logic/` - 核心业务逻辑模块
+
+- **`core_logic/coordinator/` - 协调器**
+    - **概述：** 运行在工作线程中，作为接口层和会话模块之间的逻辑路由器。
+    - **主要职责：** 接收来自接口层（`zk_interface`, `tms_interface`）的已解析业务事件/信令，将其路由到`SessionManager`（用于查找或创建`Session`）或直接路由到已存在的`Session`对象的方法。反之，接收来自`Session`对象的指令，将其路由到相应的接口层进行网络发送。
+- **`core_logic/session_manager/` - 会话管理器**
+    - **概述：** 运行在工作线程中，管理所有活动会话的生命周期。
+    - **主要职责：** 维护一个**线程安全**的会话表（如 `std::unordered_map<SessionID, std::shared_ptr<Session>>`）。负责会话的创建、查找、销毁。
+    - **与HA/Redis交互：** 在会话创建、关键状态变更、销毁时，**异步**地将必要信息写入Redis（通过`RedisClientInterface`），以供备机恢复。
+- **`core_logic/session/` - 会话对象**
+    - **概述：** 运行在工作线程中，封装单个端到端呼叫的核心状态机和业务流程。
+    - **主要职责：**
+        - 管理会话状态（初始化、连接中、激活、拆除中等）。
+        - 处理来自ZK或TMS的特定信令事件（由`Coordinator`路由而来）。
+        - 决策并触发向ZK或TMS发送信令（通过`Coordinator`）。
+        - 调用`PortManager`分配/释放媒体端口。
+        - 调用`MediaRelay`配置/清除媒体转发规则。
+        - 管理会话相关的定时器（如呼叫超时）。
+    - **核心数据结构：** 会话ID，ZK/TMS端点信息，分配的Bridge媒体端口，当前状态，关联的CU配置等。
+- **`core_logic/port_manager/` - 端口管理器**
+    - **概述：** 运行在工作线程中（或其操作被封装为任务），管理Bridge可用的UDP媒体端口池。
+    - **主要职责：** 提供**线程安全**的端口分配和回收接口。
+- **`core_logic/config_manager/` - 配置管理器**
+    - **概述：** 程序启动时加载配置，之后提供只读访问。
+    - **主要职责：** 解析JSON配置文件，提供对ZK/TMS连接信息、CU配置表、映射表等的访问。
+
+#### 3.5. `media_processing/media_relay/` - 媒体中继模块
+
+- **概述：** 负责高效的UDP媒体包转发。
+- **主要职责：**
+    - 维护一个**线程安全**的、高效的内部媒体转发表（`ActiveMediaFlowTable`），键为Bridge本地接收媒体的UDP端口（对于TMS侧）或ZK会话标识（对于ZK共享入口侧），值为转发规则（目标IP/端口、包头处理函数、发送用的Bridge源端口）。
+    - 由`Session`对象在会话建立/拆除时调用其接口来配置/清除转发规则。
+    - **转发逻辑（可能在I/O线程中直接执行以降低延迟）：**
+        - 收到媒体包后，快速查转发表。
+        - 执行指定的“加/去ZK通用报头”操作 (调用`protocols/zk_protocol`的媒体封装/解封装函数)。
+        - 通过`common/communication`将处理后的包异步发送出去。
+    - （可选）实现简单的媒体包缓冲机制。
+
+#### 3.6. `ha_module/` (或 `ms_switch` 相关逻辑的封装) - 主备容灾模块
+
+- **概述：** 负责实现主备切换逻辑，与Redis交互。
+- **主要职责：**
+    - **`HaSwitchLogic`:** (类似 `ms_switch.h` 中的功能)
+        - 初始化（`switch_init`）：判断初始角色（主/备），连接Redis。
+        - 心跳机制：主实例定期向Redis写入心跳；备实例监控心跳。
+        - 故障检测：备实例检测到主实例心跳超时。
+        - 切换执行（`switch_func`, `system_switch`）：
+            - 备实例将自己提升为主，更新Redis中的主实例标识。
+            - （如果需要）执行IP漂移等网络配置变更。
+            - 通知各核心模块（尤其是 `SessionManager`）系统角色已改变。
+        - 信号处理：响应外部信号（如 `SIGUSR1`, `SIGUSR2`）进行角色切换或状态上报。
+    - **`RedisClientInterface` (或直接使用 `hiredis` 封装):**
+        - 封装与Redis服务器的连接、命令执行（SET EX, GET, DEL, PUBLISH/SUBSCRIBE等）。
+        - 供 `HaSwitchLogic` 和 `SessionManager` 等模块使用。
+    - **主要数据结构:** 当前系统角色（主/备），对端心跳状态。
+
+#### 3.7. `logging/` - 日志模块
+
+- **概述：** 基于 `spdlog` 实现全局日志记录。
+- **主要职责：** 初始化日志配置，提供各级别日志记录接口。
+
+---
+
+### 4. 主要交互流程示例 (简述)
+
+1. **ZK发起呼叫：**
+    - ZK -> `ZkInterface` (ZK监听端口) -> I/O线程读取 -> 初步解析 -> 任务入队
+    - 工作线程获取任务 -> `ZkInterface` (可靠性处理，如需要) -> `Coordinator` -> `SessionManager` (创建`Session`对象) -> `Session`对象 (`onZkInitiateRequest`):
+        - 更新状态。
+        - 调用 `ConfigManager` 获取配置。
+        - 调用 `PortManager` 分配Bridge媒体端口。
+        - **(HA)** 将初始会话信息异步写入Redis。
+        - 通过 `Coordinator` 指示 `TmsInterface` 向TMS发起呼叫。
+        - 通过 `Coordinator` 指示 `ZkInterface` 回复ZK初步响应。
+2. **媒体流建立与转发：**
+    - `Session` 对象在收到TMS摘机和媒体端口信息后：
+        - 更新状态。
+        - **(HA)** 更新Redis中的会话媒体信息。
+        - 调用 `MediaRelay::setupFlow()` 配置双向媒体转发规则。
+    - `MediaRelay` (可能在I/O线程中):
+        - 收到ZK媒体（在ZK信令/媒体共享端口，需根据包内会话ID查找转发表） -> 去ZK协议头 -> 查转发表 -> 加TMS（如有必要）或直接转发 -> 发送给TMS。
+        - 收到TMS媒体（在Bridge为该会话分配的TMS媒体接收端口） -> 查转发表（用本地端口做键）-> 加ZK协议头 -> 发送给ZK（使用Bridge为该会话分配的对ZK发送端口）。
+3. **主备切换：**
+    - `HaSwitchLogic` (备) 检测到主故障 (如Redis心跳超时)。
+    - `HaSwitchLogic` (备) 执行切换：更新Redis主标识，(可选)IP漂移。
+    - `HaSwitchLogic` (备) 通知 `SessionManager` 加载活动会话。
+    - `SessionManager` (新主) 从Redis读取活动会话信息，重建轻量级`Session`对象或状态，尝试恢复媒体路径（这部分较复杂，可能简化为通知对端重邀或清理）。
+
+---
+
+### 5. 第三方库使用
+
+- **Boost.Asio:** 推荐用于 `common/communication/` 实现异步网络I/O。
+- **nlohmann/json:** 用于 `ConfigManager` 解析JSON配置文件。
+- **spdlog:** 用于 `logging/` 实现日志记录。
+- **hiredis (C客户端):** 用于 `RedisClientInterface` (或直接在 `HaSwitchLogic`, `SessionManager` 中封装) 与Redis通信。
+- **(可选) Google Test / Catch2:** 用于单元测试。
+
+---
+
+这份文档提供了一个更全面的结构设计框架。您可以基于此，针对每个模块进一步细化其内部类设计、函数签名、错误处理、以及与多线程相关的同步机制。在实现过程中，您会不断地回顾和调整这份设计。祝您项目顺利！
