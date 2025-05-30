@@ -95,3 +95,27 @@ wget -q --spider "https://boostorg.jfrog.io/..."  # `-q` 是静默模式，不�
 
 [容器和镜像][https://www.doubao.com/thread/w4129b6a8c4ccb2dc]
 
+
+Unix 命令的命名通常遵循以下原则：
+
+1. **简洁性**：优先使用缩写（如 `ls` 是 list 的缩写，`cp` 是 copy 的缩写）。
+2. **组合词**：将功能相关的单词组合或缩写（如 `ps aux` 中的 `aux` 是 `all users processes` 的缩写）。
+3. **功能性命名**：直接使用动词或动作描述（如 `grep` 来源于正则表达式 `g/re/p`，意为 "global search regular expression and print"）。
+
+  
+
+`compaudit` 完美体现了这些原则：既简洁（8 个字符），又通过组合词清晰表达了功能（补全系统审计）。
+
+### 其他类似命名的命令
+
+在 Zsh 或其他 shell 中，你可能会看到类似的命名模式：
+
+  
+
+- `compinit`：**comp**letion **init**ialize（初始化补全系统）。
+- `compdef`：**comp**letion **def**ine（定义自定义补全规则）。
+- `zcompile`：**Z**sh **compile**（编译 Zsh 脚本以提高加载速度）。
+
+  
+
+这种命名方式使得命令既易于记忆，又能从名称推测功能，是 Unix 哲学 "Small is beautiful" 的体现。
