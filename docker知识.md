@@ -1,3 +1,42 @@
+
+### ** Docker相关命令**
+
+|语法|类别|说明|
+|---|---|---|
+|`docker ps -a`|容器列表|查看所有容器|
+|`docker start/stop/rm`|容器管理|启停/删除容器|
+|`docker exec`|容器内执行|在运行中的容器执行命令|
+|`docker cp`|文件拷贝|宿主机与容器间复制文件|
+|`docker run -v`|卷挂载|实现数据持久化|
+### **Docker运行选项详解**
+
+|选项|类别|说明|示例|
+|---|---|---|---|
+|`-i` (`--interactive`)|输入控制|保持STDIN打开，允许容器接收输入|`echo "hello" \| docker run -i alpine cat`|
+|`-t` (`--tty`)|终端模拟|分配伪终端，支持交互式Shell环境|`docker run -t ubuntu bash`（需配合-i使用）|
+|`-it`|交互组合|组合使用，进入容器交互式Shell|`docker run -it ubuntu bash`|
+|`-d` (`--detach`)|后台运行|容器在后台运行，不占用当前终端|`docker run -d nginx`|
+|`-d` vs `-it`|运行模式|后台服务用-d，交互操作用-it|服务：`-d`，调试：`-it`|
+
+### **标准流说明**
+
+|流类型|方向|作用|Docker中的体现|
+|---|---|---|---|
+|`STDIN`|外部→程序|程序接收输入数据|`-i`选项保持此流开放|
+|`STDOUT`|程序→外部|程序正常输出结果|如`echo "hello"`的输出|
+|`STDERR`|程序→外部|程序错误信息输出|如命令执行失败的错误信息|
+
+### **使用场景对比**
+
+|场景|推荐选项|命令示例|说明|
+|---|---|---|---|
+|交互式操作|`-it`|`docker run -it ubuntu bash`|需要在容器内执行命令|
+|后台服务|`-d`|`docker run -d nginx`|Web服务、数据库等长期运行|
+|管道输入|`-i`|`echo "data" \| docker run -i alpine cat`|处理输入数据但不需要终端|
+|一次性任务|无选项|`docker run alpine echo "hello"`|执行后立即退出|
+|进入运行容器|`-it`|`docker exec -it container_id bash`|调试或管理已运行的容器|
+<details>
+<summary>交互选项详细解释</summary>
 `-it`: `-i` (interactive) 保持 STDIN 打开即使没有附加, `-t` (tty) 分配一个伪终端。这对于你想进入bash通常是需要的。如果你只是想让它在后台运行，可以省略 `-it` 并主要用 `-d`。
 
 
@@ -141,3 +180,5 @@
 - **`-i`** → 保持输入流开放（`STDIN`）。  
 - **`-t`** → 模拟终端行为（需要交互时必加）。  
 - **`-it`** → 交互式容器的黄金搭档。
+
+</details>
