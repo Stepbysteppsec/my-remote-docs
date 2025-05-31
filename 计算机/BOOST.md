@@ -319,3 +319,29 @@ int main() {
 - **你的Bridge系统**：  
   - 用2-4个I/O线程运行 `io_context`。  
   - 通过Lambda处理媒体转发逻辑。
+
+
+### **为什么 `socket` 构造函数需要 `io_context`？**
+
+#### **(1) 设计哲学：显式依赖注入**
+
+- **强制关联**：每个 I/O 对象（如 `tcp::socket`）必须明确知道它属于哪个 `io_context`，从而确保：
+    
+    - 所有异步操作由正确的 `io_context` 调度。
+        
+    - 对象析构时，`io_context` 能清理相关资源。
+        
+
+#### **(2) 技术实现**
+
+- **内部关联**：`socket` 构造函数会将自身注册到 `io_context` 的内部数据结构中。
+    
+```cpp
+ // 伪代码：socket 构造函数大致逻辑
+    tcp::socket::socket(io_context& io_ctx) {
+        this->impl_ = io_ctx.impl_;  // 关联到io_context的实现层
+        io_ctx.register_socket(this); // 注册到调度器
+    }
+```
+    
+   
