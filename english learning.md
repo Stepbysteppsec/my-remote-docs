@@ -873,3 +873,13 @@ The value stored in the forwarding table entry for those values indicates the ou
 
 
 1. - 原句 “emulates the behavior of a transmission link of a specified bit rate between sending and receiving hosts” 翻译时语序有点不太自然，更自然的语序是 “模拟了发送主机和接收主机之间一条具有特定比特率的传输链路的行为”，突出 “发送主机和接收主机之间” 这个位置关系以及 “具有特定比特率” 修饰 “传输链路”。
+
+**Original**: "in my摄像中" **Corrected**: "in my imagination" or "in my mind"
+
+**Original**: "espacially two points" **Corrected**: "especially two points"
+
+**Original**: "how to move some media forward and process to thread" **Corrected**: "how to forward media processing to threads"
+
+**Original**: "seocnd i don't know" **Corrected**: "second, I don't know"
+
+**Original**: "bascially epoll knowledge" **Corrected**: "basic epoll knowledge"
