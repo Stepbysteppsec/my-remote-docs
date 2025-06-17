@@ -1,0 +1,254 @@
+{
+  "main": {
+    "id": "9de24a35c0e78c63",
+    "type": "split",
+    "children": [
+      {
+        "id": "b1151fb4e009c562",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "879c1985f6d6a5b6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "计算机/cpp知识.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "cpp知识"
+            }
+          },
+          {
+            "id": "d5793b158a397f10",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "计算机/leetcode.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "leetcode"
+            }
+          },
+          {
+            "id": "b5313c60a18f665c",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Bridge.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Bridge"
+            }
+          },
+          {
+            "id": "58002e4b4b88ff83",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "structure.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "structure"
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "5807461ba3686329",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "1dbf67bfb65973f9",
+        "type": "leaf",
+        "state": {
+          "type": "file-explorer",
+          "state": {
+            "sortOrder": "alphabetical",
+            "autoReveal": false
+          },
+          "icon": "lucide-folder-closed",
+          "title": "Files"
+        }
+      },
+      {
+        "id": "178162ac459fd338",
+        "type": "leaf",
+        "state": {
+          "type": "search",
+          "state": {
+            "query": "",
+            "matchingCase": false,
+            "explainSearch": false,
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical"
+          },
+          "icon": "lucide-search",
+          "title": "Search"
+        }
+      },
+      {
+        "id": "4c4673908145aaa0",
+        "type": "leaf",
+        "state": {
+          "type": "tag",
+          "state": {
+            "sortOrder": "frequency",
+            "useHierarchy": true,
+            "showSearch": false,
+            "searchQuery": ""
+          },
+          "icon": "lucide-tags",
+          "title": "Tags"
+        }
+      },
+      {
+        "id": "8ccdcd29148f1320",
+        "type": "leaf",
+        "state": {
+          "type": "bookmarks",
+          "state": {},
+          "icon": "lucide-bookmark",
+          "title": "Bookmarks"
+        }
+      }
+    ],
+    "currentTab": 0
+  },
+  "right": {
+    "id": "d4261dac1d9c8107",
+    "type": "mobile-drawer",
+    "children": [
+      {
+        "id": "7f6b73cd7d1e6e37",
+        "type": "leaf",
+        "state": {
+          "type": "backlink",
+          "state": {
+            "collapseAll": false,
+            "extraContext": false,
+            "sortOrder": "alphabetical",
+            "showSearch": false,
+            "searchQuery": "",
+            "backlinkCollapsed": false,
+            "unlinkedCollapsed": true
+          },
+          "icon": "links-coming-in",
+          "title": "Backlinks"
+        }
+      },
+      {
+        "id": "f46795f3715bea33",
+        "type": "leaf",
+        "state": {
+          "type": "outgoing-link",
+          "state": {
+            "linksCollapsed": false,
+            "unlinkedCollapsed": true
+          },
+          "icon": "links-going-out",
+          "title": "Outgoing links"
+        }
+      },
+      {
+        "id": "e5fbda1c5a9122ee",
+        "type": "leaf",
+        "state": {
+          "type": "outline",
+          "state": {
+            "followCursor": false,
+            "showSearch": false,
+            "searchQuery": ""
+          },
+          "icon": "lucide-list",
+          "title": "Outline"
+        }
+      },
+      {
+        "id": "080149f59e1c6e6f",
+        "type": "leaf",
+        "state": {
+          "type": "git-view",
+          "state": {},
+          "icon": "git-pull-request",
+          "title": "Source Control"
+        }
+      }
+    ],
+    "currentTab": 3
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "obsidian-git:Open Git source control": false
+    }
+  },
+  "active": "b5313c60a18f665c",
+  "lastOpenFiles": [
+    "Bridge.md",
+    "如何恢复有效期内的会话.md",
+    "docker知识.md",
+    "摄影/摄影艺术全套.md",
+    "开发计划.md",
+    "计算机/cpp知识.md",
+    "todolist.md",
+    "structure.md",
+    "english learning.md",
+    "conflict-files-obsidian-git.md",
+    "计算机/BOOST.md",
+    "mac基础知识.md",
+    "计算机/git基础知识.md",
+    "计算机/linux操作基础知识.md",
+    "计算机/docker知识.md",
+    "计算机/leetcode.md",
+    "计算机/attachments/IMG20250616103428.jpg",
+    "计算机/attachments/IMG20250613104704.jpg",
+    "计算机/attachments",
+    "计算机/cpp thread.md",
+    "计算机/vscode/cpp 开发配置.md",
+    "Untitled.md",
+    "架构疑问.md",
+    "周报.md",
+    "计算机/基础知识.md",
+    "未来增长点.md",
+    "README.md",
+    "/Bridge.md",
+    "/todolist.md",
+    "B2BUA",
+    "摄影/截屏 2025-03-23 下午3.46.06.jpeg",
+    "摄影/attachments/截屏 2025-04-26 下午4.05.01.jpeg",
+    "摄影/attachments/Pasted image 20250407224411.png",
+    "摄影/attachments/Pasted image 20250407094345.png",
+    "摄影/attachments/Pasted image 20250405082549.png",
+    "摄影/attachments/Pasted image 20250405082514.png",
+    "摄影/attachments/Pasted image 20250331153646.png",
+    "摄影/attachments/Pasted image 20250320224237.png",
+    "计算机/vscode",
+    "计算机",
+    "经济",
+    "数学",
+    "摄影/attachments",
+    "摄影"
+  ]
+}
