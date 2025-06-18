@@ -599,4 +599,684 @@ private:
     std::set<int> allocated_ports;
 };
 ```
-]]
+
+
+
+架构设计第二版：
+//================================================
+// src/protocol/message_types.h - 消息类型定义
+//=============================================================================
+#pragma once
+#include <string>
+#include <cstdint>
+
+// ZK协议消息类型
+enum class ZKMessageType {
+    QUERY_SIGNAL = 0x01,
+    LINK_CONTROL = 0x02,
+    STATUS_REPORT = 0x03,
+    MEDIA_FEEDBACK = 0x04
+};
+
+// TMS JSON-RPC方法类型
+enum class TMSMethodType {
+    CALL_REQUEST,
+    RINGING,
+    ANSWER,
+    HANGUP,
+    PAGING
+};
+
+// 会话状态枚举
+enum class SessionState {
+    IDLE,
+    CALLING, 
+    ANSWERED,
+    TALKING,
+    HANGING,
+    RELEASED
+};
+
+// 会话类型枚举  
+enum class SessionType {
+    P2P,
+    CLUSTER
+};
+
+// 反馈类型
+enum class FeedbackType {
+    MEDIA_START,
+    MEDIA_STOP,
+    STATE_CHANGE
+};
+
+//=============================================================================
+// src/core/session_manager.h - Session管理核心  
+//=============================================================================
+#pragma once
+#include "../protocol/message_types.h"
+#include <string>
+#include <unordered_map>
+#include <functional>
+#include <queue>
+#include <mutex>
+#include <array>
+#include <netinet/in.h>
+
+// 前置声明避免循环依赖
+class PortPool;
+class ConfigManager;
+class ZKProtocol;  // 前置声明
+
+// 媒体绑定配置结构
+struct MediaBindingConfig {
+    std::string session_id;
+    int listen_port;                  // 监听端口
+    struct sockaddr_in target_addr;   // 转发目标地址
+    int feedback_socket_fd;           // 反馈socket句柄
+    struct sockaddr_in feedback_addr; // 反馈目标地址
+    
+    // 预编译的转发函数指针
+    std::function<void(const char*, size_t)> forward_function;
+    std::function<void(const char*, size_t)> feedback_function;
+};
+
+// Session信息结构
+struct SessionInfo {
+    // 唯一标识
+    std::string session_id;           // zk_ip + target_id组合
+    std::string zk_ip;
+    std::string target_id;
+    std::string cu_number;            // 电话号码
+    
+    // 端口信息
+    int bridge_tms_recv_port;         // Bridge接收TMS媒体端口
+    int bridge_zk_recv_port;          // Bridge接收ZK媒体端口
+    
+    // 地址信息
+    struct sockaddr_in tms_send_addr; // TMS媒体发送地址
+    struct sockaddr_in zk_send_addr;  // ZK媒体发送地址
+    struct sockaddr_in zk_signal_addr;// ZK信令地址
+    
+    // 会话状态
+    SessionState state;
+    
+    // 会话类型
+    SessionType type;
+    
+    // 媒体线程分配
+    int assigned_media_thread_id;     // 分配的媒体线程ID
+    
+    // 状态变更回调 - 解决循环依赖的关键！
+    std::function<void(SessionState, SessionState)> state_change_callback;
+};
+
+class SessionManager {
+private:
+    // Session表 - 多键索引
+    std::unordered_map<std::string, SessionInfo> sessions_by_id;           // zk_ip+target_id
+    std::unordered_map<std::string, SessionInfo*> sessions_by_cu;          // cu号索引
+    std::unordered_map<int, SessionInfo*> sessions_by_tms_port;            // TMS端口索引
+    std::unordered_map<int, SessionInfo*> sessions_by_zk_port;             // ZK端口索引
+    
+    PortPool* port_pool;
+    ConfigManager* config_manager;
+    
+    // 解决循环依赖：不直接持有ZKProtocol指针，而是通过回调函数
+    std::function<void(const SessionInfo&, SessionState)> zk_notify_callback;
+    std::function<void(const SessionInfo&, SessionState)> tms_notify_callback;
+    
+    // 媒体线程通信队列
+    std::array<std::queue<MediaBindingConfig>, 4> media_thread_queues;
+    std::array<std::mutex, 4> queue_mutexes;
+
+public:
+    SessionManager();
+    ~SessionManager();
+    
+    void set_port_pool(PortPool* pool);
+    void set_config_manager(ConfigManager* config);
+    
+    // 关键：注册协议通知回调，避免循环依赖
+    void set_zk_notify_callback(std::function<void(const SessionInfo&, SessionState)> callback);
+    void set_tms_notify_callback(std::function<void(const SessionInfo&, SessionState)> callback);
+    
+    // Session查找方法
+    SessionInfo* find_session_by_cu(const std::string& cu);
+    SessionInfo* find_session_by_id(const std::string& zk_ip, const std::string& target_id);
+    SessionInfo* find_session_by_port(int port);
+    
+    // Session生命周期管理
+    std::string create_session(const std::string& zk_ip, const std::string& target_id, SessionType type);
+    void update_session_state(const std::string& session_id, SessionState new_state);
+    void destroy_session(const std::string& session_id);
+    
+    // 媒体配置推送
+    void push_media_binding(const MediaBindingConfig& config);
+
+private:
+    int assign_media_thread();
+    void remove_from_indexes(const std::string& session_id);
+    void add_to_indexes(const SessionInfo& session);
+    
+    // 状态变化通知 - 通过回调避免循环依赖
+    void notify_state_change(const SessionInfo& session, SessionState old_state, SessionState new_state);
+};
+
+//=============================================================================
+// src/core/config_manager.h - 配置文件管理
+//=============================================================================
+#pragma once
+#include <string>
+#include <vector>
+#include <unordered_map>
+
+// ZK配置结构
+struct ZKConfig {
+    std::string zk_id;
+    std::string ip;
+    std::string bridge_ip;
+    int port;
+};
+
+class ConfigManager {
+private:
+    // ZK配置列表
+    std::vector<ZKConfig> zk_configs;
+    
+    // Target_ID映射表
+    std::unordered_map<std::string, std::string> target_cu_map;
+    
+    // 端口池配置
+    int port_pool_start;
+    int port_pool_end;
+    
+    // TMS服务器配置
+    std::string tms_server_ip;
+    int tms_server_port;
+    
+    // Bridge服务器配置
+    std::string bridge_server_ip;
+    int bridge_server_port;
+
+public:
+    ConfigManager();
+    ~ConfigManager();
+    
+    bool load_config(const std::string& config_file);
+    
+    const std::vector<ZKConfig>& get_zk_configs() const;
+    std::string get_cu_by_target_id(const std::string& target_id) const;
+    std::pair<int, int> get_port_pool_range() const;
+    
+    std::string get_tms_server_ip() const { return tms_server_ip; }
+    int get_tms_server_port() const { return tms_server_port; }
+    std::string get_bridge_server_ip() const { return bridge_server_ip; }
+    int get_bridge_server_port() const { return bridge_server_port; }
+
+private:
+    bool parse_zk_configs(const std::string& section);
+    bool parse_target_mappings(const std::string& section);
+    bool parse_port_pool(const std::string& section);
+    bool parse_tms_server(const std::string& section);
+    bool parse_bridge_server(const std::string& section);
+};
+
+//=============================================================================
+// src/core/port_pool.h - 端口池管理
+//=============================================================================
+#pragma once
+#include <set>
+#include <mutex>
+
+class PortPool {
+private:
+    int start_port;
+    int end_port;
+    std::set<int> available_ports;
+    std::set<int> allocated_ports;
+    std::mutex port_mutex;
+
+public:
+    PortPool();
+    ~PortPool();
+    
+    bool initialize(int start, int end);
+    int allocate_port();
+    void release_port(int port);
+    bool is_port_available(int port) const;
+    size_t get_available_count() const;
+    size_t get_allocated_count() const;
+
+private:
+    bool is_valid_port(int port) const;
+};
+
+//=============================================================================
+// src/protocol/zk_protocol.h - ZK协议处理
+//=============================================================================
+#pragma once
+#include "message_types.h"
+#include <string>
+#include <functional>
+#include <unordered_map>
+
+// 前置声明避免循环依赖
+class SessionManager;
+struct SessionInfo;
+
+// ZK消息结构
+struct ZKMessage {
+    ZKMessageType type;
+    std::string zk_ip;
+    std::string target_id;
+    std::string content;
+    size_t data_length;
+};
+
+class ZKProtocol {
+private:
+    SessionManager* session_manager;
+    
+    // 第一类：消息处理函数映射 (接收到ZK消息时的路由)
+    std::unordered_map<ZKMessageType, std::function<void(const ZKMessage&)>> message_handlers;
+    
+    // 消息发送回调 - 由网络层注册
+    std::function<bool(const char*, size_t, const std::string&, int)> send_callback;
+
+public:
+    ZKProtocol();
+    ~ZKProtocol();
+    
+    void set_session_manager(SessionManager* manager);
+    void set_send_callback(std::function<bool(const char*, size_t, const std::string&, int)> callback);
+    
+    // 第一类：接收处理函数 - 由UDPHandler调用
+    void process_zk_message(const char* data, size_t len, const std::string& source_ip);
+    
+    // 第二类：发送构造函数 - 由SessionManager状态变化时调用
+    bool send_link_status_to_zk(const SessionInfo& session);
+    bool send_media_feedback_to_zk(const SessionInfo& session, FeedbackType type);
+    bool send_session_report_to_zk(const std::string& zk_ip, const SessionInfo& session);
+    
+    // 消息构造辅助函数（私有，供发送函数内部使用）
+private:
+    // 第一类：具体消息解析处理函数
+    void handle_invite_signal(const ZKMessage& msg);      // 发起呼叫
+    void handle_query_signal(const ZKMessage& msg);       // 查询状态
+    void handle_link_control_signal(const ZKMessage& msg); // 链路控制
+    void handle_bye_signal(const ZKMessage& msg);          // 结束呼叫
+    
+    // 第二类：消息构造函数
+    std::string create_link_status_response(const SessionInfo& session);
+    std::string create_media_feedback_message(const SessionInfo& session, FeedbackType type);
+    std::string create_session_report_message(const SessionInfo& session);
+    std::string create_invite_response(const SessionInfo& session, int media_port);
+    
+    // 解析辅助函数
+    bool parse_zk_message(const char* data, size_t len, ZKMessage& msg);
+    std::string extract_target_id(const char* data, size_t len);
+    std::string extract_call_id(const char* data, size_t len);
+    ZKMessageType determine_message_type(const char* data, size_t len);
+    
+    // 初始化处理函数映射
+    void initialize_message_handlers();
+};
+
+//=============================================================================
+// src/protocol/tms_protocol.h - TMS协议处理
+//=============================================================================
+#pragma once
+#include "message_types.h"
+#include "../core/session_manager.h"
+#include <string>
+#include <functional>
+#include <unordered_map>
+
+class TMSProtocol {
+private:
+    SessionManager* session_manager;
+    
+    // JSON-RPC处理函数映射
+    std::unordered_map<std::string, std::function<void(const std::string&)>> method_handlers;
+    
+    // 消息发送回调 - 由网络层注册
+    std::function<bool(const std::string&)> send_callback;
+
+public:
+    TMSProtocol();
+    ~TMSProtocol();
+    
+    void set_session_manager(SessionManager* manager);
+    void set_send_callback(std::function<bool(const std::string&)> callback);
+    
+    // 消息处理入口 - 由TCPClient/TCPServer调用
+    void process_tms_message(const std::string& json_message);
+    
+    // 消息构造
+    std::string create_call_request(const std::string& cu, int recv_port);
+    std::string create_hangup_request(const std::string& cu);
+    
+    // 主动发送
+    bool send_call_request(const std::string& cu, int media_port);
+    bool send_hangup_request(const std::string& cu);
+
+private:
+    // 具体处理函数
+    void handle_ringing(const std::string& params);
+    void handle_paging(const std::string& params);
+    void handle_answer(const std::string& params);
+    void handle_hangup(const std::string& params);
+    
+    // JSON解析辅助函数
+    std::string extract_method(const std::string& json);
+    std::string extract_params(const std::string& json);
+    std::string extract_cu_from_params(const std::string& params);
+};
+
+//=============================================================================
+// src/network/udp_handler.h - UDP处理基类
+//=============================================================================
+#pragma once
+#include <netinet/in.h>
+#include <functional>
+
+class UDPHandler {
+private:
+    int socket_fd;
+    struct sockaddr_in bind_addr;
+    bool is_bound;
+    
+    // 消息接收回调 - 由协议层注册
+    std::function<void(const char*, size_t, const std::string&)> receive_callback;
+
+public:
+    UDPHandler();
+    ~UDPHandler();
+    
+    bool bind_port(const std::string& ip, int port);
+    void close_socket();
+    
+    // 发送消息
+    ssize_t send_to(const char* data, size_t len, const struct sockaddr_in& addr);
+    ssize_t send_to(const char* data, size_t len, const std::string& ip, int port);
+    
+    // 接收消息
+    ssize_t receive_from(char* buffer, size_t buffer_size, struct sockaddr_in& from_addr);
+    
+    // 设置接收回调 - 协议层注册处理函数
+    void set_receive_callback(std::function<void(const char*, size_t, const std::string&)> callback);
+    
+    // 事件循环 - 由线程调用
+    void run_event_loop();
+    
+    int get_socket_fd() const { return socket_fd; }
+
+private:
+    bool create_socket();
+    bool enable_reuse_port();
+    std::string sockaddr_to_string(const struct sockaddr_in& addr);
+};
+
+//=============================================================================
+// src/network/tcp_client.h - TMS TCP客户端
+//=============================================================================
+#pragma once
+#include <netinet/in.h>
+#include <functional>
+#include <string>
+
+class TCPClient {
+private:
+    int socket_fd;
+    struct sockaddr_in server_addr;
+    bool connected;
+    
+    // 消息接收回调 - 由协议层注册
+    std::function<void(const std::string&)> receive_callback;
+    
+    // 连接状态回调
+    std::function<void(bool)> connection_callback;
+
+public:
+    TCPClient();
+    ~TCPClient();
+    
+    bool connect_to_tms(const std::string& ip, int port);
+    void disconnect();
+    bool is_connected() const { return connected; }
+    
+    bool send_message(const std::string& message);
+    std::string receive_message();
+    
+    // 设置回调 - 协议层注册处理函数
+    void set_receive_callback(std::function<void(const std::string&)> callback);
+    void set_connection_callback(std::function<void(bool)> callback);
+    
+    // 事件循环 - 由线程调用
+    void run_event_loop();
+
+private:
+    bool create_socket();
+    void handle_disconnection();
+};
+
+//=============================================================================
+// src/network/tcp_server.h - TMS TCP服务端
+//=============================================================================
+#pragma once
+#include <netinet/in.h>
+#include <functional>
+#include <string>
+#include <unordered_map>
+
+class TCPServer {
+private:
+    int server_fd;
+    struct sockaddr_in server_addr;
+    bool is_listening;
+    
+    // 客户端管理
+    std::unordered_map<int, std::string> client_connections; // fd -> client_ip
+    
+    // 消息接收回调 - 由协议层注册
+    std::function<void(const std::string&, int)> receive_callback; // message, client_fd
+    
+    // 客户端连接回调
+    std::function<void(int, bool, const std::string&)> connection_callback; // client_fd, connected, client_ip
+
+public:
+    TCPServer();
+    ~TCPServer();
+    
+    bool bind_and_listen(const std::string& ip, int port);
+    void stop_server();
+    
+    bool send_to_client(int client_fd, const std::string& message);
+    void disconnect_client(int client_fd);
+    
+    // 设置回调 - 协议层注册处理函数
+    void set_receive_callback(std::function<void(const std::string&, int)> callback);
+    void set_connection_callback(std::function<void(int, bool, const std::string&)> callback);
+    
+    // 事件循环 - 由线程调用
+    void run_event_loop();
+
+private:
+    bool create_socket();
+    void handle_new_connection();
+    void handle_client_message(int client_fd);
+    void remove_client(int client_fd);
+};
+
+//=============================================================================
+// src/media/media_thread.h - 媒体处理线程
+//=============================================================================
+#pragma once
+#include "../core/session_manager.h"
+#include <unordered_map>
+#include <queue>
+#include <mutex>
+
+class MediaThread {
+private:
+    int thread_id;
+    int feedback_socket_fd;           // SO_REUSEPORT专用socket
+    int epoll_fd;                     // epoll事件循环
+    bool running;
+    
+    // 预绑定配置存储
+    std::unordered_map<int, MediaBindingConfig> port_bindings;
+    
+    // 配置接收队列
+    std::queue<MediaBindingConfig> config_queue;
+    std::mutex config_mutex;
+
+public:
+    MediaThread();
+    ~MediaThread();
+    
+    void initialize(int thread_id);
+    void add_binding_config(const MediaBindingConfig& config);
+    
+    // 线程主循环 - 只负责事件循环管理
+    void run();
+    void stop();
+
+private:
+    void setup_feedback_socket();
+    void setup_epoll();
+    void process_config_queue();
+    void handle_media_data(int port, const char* data, size_t len);
+    void send_feedback(const std::string& session_id, FeedbackType type);
+    
+    bool bind_media_port(int port);
+    void unbind_media_port(int port);
+};
+
+//=============================================================================
+// src/threads/signal_thread.h - 信令处理线程
+//=============================================================================
+#pragma once
+#include "../core/session_manager.h"
+#include "../protocol/tms_protocol.h"
+#include "../protocol/zk_protocol.h"
+#include "../network/tcp_client.h"
+#include "../network/tcp_server.h"
+#include "../network/udp_handler.h"
+
+class SignalThread {
+private:
+    bool running;
+    
+    // 核心组件
+    SessionManager session_manager;
+    TMSProtocol tms_protocol;
+    ZKProtocol zk_protocol;
+    
+    // 网络组件
+    TCPClient tms_client;
+    TCPServer tms_server;  
+    UDPHandler zk_handler;
+
+public:
+    SignalThread();
+    ~SignalThread();
+    
+    void initialize();
+    
+    // 线程主循环 - 只负责事件循环管理，不处理具体业务逻辑
+    void run();
+    void stop();
+
+private:
+    void setup_protocol_callbacks();  // 注册协议处理函数到网络组件
+    void setup_network_connections(); // 建立网络连接
+    void periodic_status_report();    // 定时状态上报
+};
+
+//=============================================================================
+// src/threads/thread_manager.h - 线程管理
+//=============================================================================
+#pragma once
+#include "signal_thread.h"
+#include "../media/media_thread.h"
+#include <thread>
+#include <array>
+
+class ThreadManager {
+private:
+    // 信令线程
+    SignalThread signal_thread;
+    std::thread signal_worker;
+    
+    // 媒体处理线程
+    std::array<MediaThread, 4> media_threads;
+    std::array<std::thread, 4> media_workers;
+    
+    bool initialized;
+    bool running;
+
+public:
+    ThreadManager();
+    ~ThreadManager();
+    
+    bool initialize();
+    bool start_all_threads();
+    void stop_all_threads();
+    void wait_for_completion();
+    
+    // 获取媒体线程接口
+    MediaThread* get_media_thread(int thread_id);
+
+private:
+    void start_signal_thread();
+    void start_media_threads();
+};
+
+//=============================================================================
+// src/utils/logger.h - 日志系统
+//=============================================================================
+#pragma once
+#include <string>
+#include <fstream>
+#include <mutex>
+
+enum class LogLevel {
+    DEBUG = 0,
+    INFO = 1,
+    WARN = 2,
+    ERROR = 3
+};
+
+class Logger {
+private:
+    static Logger* instance;
+    std::ofstream log_file;
+    LogLevel current_level;
+    std::mutex log_mutex;
+
+public:
+    static Logger& getInstance();
+    static bool initialize(const std::string& filename);
+    
+    void log(LogLevel level, const std::string& message);
+    void debug(const std::string& message);
+    void info(const std::string& message);
+    void warn(const std::string& message);
+    void error(const std::string& message);
+    
+    void set_level(LogLevel level);
+
+private:
+    Logger() = default;
+    std::string level_to_string(LogLevel level);
+    std::string get_timestamp();
+};
+
+// 便利宏
+#define LOG_DEBUG(msg) Logger::getInstance().debug(msg)
+#define LOG_INFO(msg) Logger::getInstance().info(msg)
+#define LOG_WARN(msg) Logger::getInstance().warn(msg)
+#define LOG_ERROR(msg) Logger::getInstance().error(msg)
+
