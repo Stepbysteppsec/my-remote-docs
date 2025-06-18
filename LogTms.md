@@ -527,3 +527,480 @@ udptxt[LAN_LOG_LOCAL].ip = settings.value("LOCAL_NETWORK/local_ip").toString();
 
 
 ---
+
+## 第二步：模块划分思维
+
+开发者脑中的模块化思考：
+# 模块划分思维过程
+
+## 开发者的模块化思考
+
+### 第一轮思考：按功能划分
+
+> "需求里提到了几个关键动作：接收、判断、显示、存储"
+
+1. **网络接收模块** - 负责从网络接收数据
+2. **数据解析模块** - 判断设备类型和解析内容
+3. **UI显示模块** - 界面展示
+4. **文件存储模块** - 保存到文件
+
+### 第二轮思考：按线程需求重新划分
+
+> "需求明确说了要多线程，让我重新考虑..."
+
+**线程架构设计：**
+
+- **主线程：** UI显示 + 总控制
+- **网络线程：** 接收数据包
+- **解析线程：** 判断设备类型，解析数据
+- **存储线程：** 写入文件
+
+### 第三轮思考：考虑数据流向
+
+> "数据怎么在线程间流转？"
+
+```
+网络线程 --[原始数据包]--> 解析线程 --[解析后数据]--> UI线程
+                                           |
+                                           +--> 存储线程
+```
+
+### 最终模块设计：
+
+1. **UdpReceiver** - UDP接收器（独立线程）
+2. **DataProcessor** - 数据解析器（独立线程）
+3. **FileWriter** - 文件写入器（独立线程）
+4. **MainController** - 主控制器（主线程）
+5. **DeviceManager** - 设备状态管理（解析线程）
+
+### 模块间通信方式：
+
+- **Qt信号槽** - 线程安全，异步通信
+- **共享数据结构** - 需要加锁保护
+
+---
+### 第三步：核心数据结构设计思维
+```
+// 开发者的数据结构设计思维过程
+
+// ==================== 开发者思考过程 ====================
+/*
+开发者内心独白：
+"现在我需要设计数据结构，让我想想数据是怎么流动的..."
+
+1. 网络接收到的是原始字节数组
+2. 解析后需要知道：设备ID、设备类型、日志内容
+3. UI需要显示：设备信息、日志内容、时间戳
+4. 存储需要：按设备分类的文件路径
+5. 设备管理需要：设备状态、统计信息
+
+"我需要几个核心数据结构..."
+*/
+
+// ==================== 第一个数据结构：原始数据包 ====================
+// 开发者思考："网络接收到什么？"
+struct RawDataPacket {
+    QByteArray rawData;        // 原始字节数据
+    QString senderIp;          // 发送方IP
+    quint16 senderPort;        // 发送方端口
+    QDateTime receiveTime;     // 接收时间
+    
+    // 开发者思考："需要基本的验证"
+    bool isValid() const {
+        return rawData.size() >= 3; // 至少要有设备ID和类型
+    }
+};
+
+// ==================== 第二个数据结构：设备信息 ====================  
+// 开发者思考："需要区分三种设备类型"
+enum DeviceType {
+    DEV_UNKNOWN = 0,
+    DEV_I = 1,       // 第一种设备
+    DEV_II = 2,      // 第二种设备  
+    DEV_III = 3      // 第三种设备
+};
+
+// 开发者思考："每个设备的基本信息"
+struct DeviceInfo {
+    int deviceId;              // 设备ID（数据包中解析出来）
+    DeviceType deviceType;     // 设备类型（数据包中解析出来）
+    QString ipAddress;         // 设备IP地址
+    quint16 port;             // 设备端口
+    bool isOnline;            // 是否在线
+    QDateTime lastActiveTime; // 最后活跃时间
+    
+    // 开发者思考："需要一些统计信息用于监控"
+    qint64 totalPackets;      // 总接收包数
+    qint64 totalBytes;        // 总接收字节数
+    int timeoutCounter;       // 超时计数器
+};
+
+// ==================== 第三个数据结构：解析后的日志条目 ====================
+// 开发者思考："解析后的数据应该包含什么？"
+struct LogEntry {
+    int deviceId;             // 设备ID
+    DeviceType deviceType;    // 设备类型
+    QString senderIp;         // 发送方IP
+    quint16 senderPort;       // 发送方端口
+    QDateTime timestamp;      // 时间戳
+    QByteArray logContent;    // 日志内容（从数据包第3字节开始）
+    bool isValid;             // 是否有效
+    
+    // 开发者思考："UI显示需要格式化的字符串"
+    QString toDisplayString() const {
+        return QString("[%1] 设备%2(类型%3): %4")
+               .arg(timestamp.toString("hh:mm:ss"))
+               .arg(deviceId)
+               .arg(static_cast<int>(deviceType))
+               .arg(QString::fromUtf8(logContent));
+    }
+};
+
+// ==================== 第四个数据结构：文件上下文 ====================
+// 开发者思考："文件写入需要管理文件句柄和状态"
+struct FileContext {
+    QFile *file;              // 文件句柄
+    QTextStream *stream;      // 文本流
+    QString filePath;         // 文件路径
+    qint64 currentSize;       // 当前文件大小
+    QDateTime createTime;     // 创建时间
+    
+    // 开发者思考："需要文件轮转，避免单个文件太大"
+    bool needRotation(qint64 maxSize = 100 * 1024 * 1024) const {
+        return currentSize >= maxSize; // 100MB轮转
+    }
+};
+
+// ==================== 第五个数据结构：设备映射表 ====================
+// 开发者思考："需要快速查找设备信息"
+using DeviceMap = QMap<int, DeviceInfo*>;  // 设备ID -> 设备信息
+using FileMap = QMap<int, FileContext>;    // 设备ID -> 文件上下文
+
+// ==================== 配置结构 ====================
+// 开发者思考："系统需要一些配置参数"
+struct SystemConfig {
+    QString listenIp;         // 监听IP
+    quint16 listenPort;       // 监听端口
+    QString logBasePath;      // 日志根目录
+    int deviceTimeout;        // 设备超时时间（秒）
+    qint64 maxFileSize;       // 最大文件大小
+    
+    // 默认配置
+    SystemConfig() 
+        : listenIp("127.0.0.1")
+        , listenPort(4001)
+        , logBasePath("./tmslog")
+        , deviceTimeout(10)
+        , maxFileSize(100 * 1024 * 1024) {}
+};
+
+// ==================== 开发者的设计原则总结 ====================
+/*
+设计原则：
+1. 数据结构要反映业务流程：原始数据 -> 解析数据 -> 显示/存储
+2. 每个结构体职责单一：RawDataPacket负责网络数据，LogEntry负责业务数据
+3. 考虑性能：使用QMap快速查找，避免每次遍历
+4. 考虑扩展性：枚举类型便于增加新设备类型
+5. 线程安全：结构体本身无状态，状态由管理类负责同步
+*/
+```
+
+### 第四步 ： 模块话头文件设计思维
+```
+// ==================== 开发者的头文件设计思维 ====================
+
+/*
+开发者思考过程：
+"现在我有了数据结构，需要设计各个模块的接口。
+每个模块应该：
+1. 只暴露必要的接口
+2. 通过信号槽通信（线程安全）
+3. 职责单一，便于测试和维护
+"
+*/
+
+// ==================== 1. UDP接收模块 ====================
+// udp_receiver.h
+#ifndef UDP_RECEIVER_H
+#define UDP_RECEIVER_H
+
+#include <QObject>
+#include <QUdpSocket>
+#include "core_types.h" // 包含我们定义的数据结构
+
+/*
+开发者思考：
+"UDP接收器的职责就是接收网络数据，转换成RawDataPacket发送给下一层"
+*/
+class UdpReceiver : public QObject
+{
+    Q_OBJECT
+public:
+    explicit UdpReceiver(QObject *parent = nullptr);
+    
+    // 开发者思考："需要启动和停止接口"
+    bool startListening(const QString &ip, quint16 port);
+    void stopListening();
+    bool isListening() const;
+
+signals:
+    // 开发者思考："收到数据就发信号，让其他模块处理"
+    void dataReceived(const RawDataPacket &packet);
+    void errorOccurred(const QString &error);
+
+private slots:
+    // 开发者思考："Qt的槽函数处理UDP socket事件"
+    void handleReadyRead();
+
+private:
+    QUdpSocket *m_udpSocket;
+    bool m_isListening;
+};
+
+#endif
+
+// ==================== 2. 数据解析模块 ====================
+// data_processor.h  
+#ifndef DATA_PROCESSOR_H
+#define DATA_PROCESSOR_H
+
+#include <QObject>
+#include <QMutex>
+#include "core_types.h"
+
+/*
+开发者思考：
+"数据处理器负责：
+1. 解析原始数据包
+2. 管理设备状态
+3. 生成日志条目
+这是系统的核心业务逻辑"
+*/
+class DataProcessor : public QObject
+{
+    Q_OBJECT
+public:
+    explicit DataProcessor(QObject *parent = nullptr);
+    
+    // 开发者思考："提供查询接口给UI"
+    DeviceInfo* getDevice(int deviceId);
+    QList<DeviceInfo*> getAllDevices();
+    int getOnlineDeviceCount();
+
+signals:
+    // 开发者思考："解析完成后发送给UI和存储模块"
+    void logEntryReady(const LogEntry &entry);
+    void deviceStatusChanged(int deviceId, bool isOnline);
+    void newDeviceDetected(const DeviceInfo &device);
+
+public slots:
+    // 开发者思考："接收UDP模块发来的原始数据"
+    void processRawData(const RawDataPacket &packet);
+    
+    // 开发者思考："定时检查设备状态"
+    void checkDeviceTimeout();
+
+private:
+    // 开发者思考："核心业务逻辑方法"
+    LogEntry parsePacket(const RawDataPacket &packet);
+    void updateDeviceStatus(const LogEntry &entry);
+    DeviceInfo* createNewDevice(const LogEntry &entry);
+    
+    // 开发者思考："设备管理需要线程安全"
+    DeviceMap m_devices;
+    QMutex m_deviceMutex;
+};
+
+#endif
+
+// ==================== 3. 文件写入模块 ====================
+// file_writer.h
+#ifndef FILE_WRITER_H
+#define FILE_WRITER_H
+
+#include <QObject>
+#include <QMutex>
+#include "core_types.h"
+
+/*
+开发者思考：
+"文件写入器负责：
+1. 按设备分类创建文件
+2. 写入日志条目
+3. 管理文件轮转
+4. 维护文件句柄"
+*/
+class FileWriter : public QObject
+{
+    Q_OBJECT
+public:
+    explicit FileWriter(QObject *parent = nullptr);
+    ~FileWriter();
+    
+    // 开发者思考："配置接口"
+    void setBasePath(const QString &path);
+    void setMaxFileSize(qint64 size);
+
+signals:
+    void fileWritten(int deviceId, const QString &filePath);
+    void writeError(int deviceId, const QString &error);
+    void fileRotated(int deviceId, const QString &newPath);
+
+public slots:
+    // 开发者思考："接收解析模块发来的日志条目"
+    void writeLogEntry(const LogEntry &entry);
+
+private:
+    // 开发者思考："文件管理的核心方法"
+    QString generateFilePath(int deviceId, DeviceType type);
+    void createNewFile(int deviceId, DeviceType type);
+    void rotateFile(int deviceId, DeviceType type);
+    void closeFile(int deviceId);
+    
+    // 开发者思考："文件操作需要线程安全"
+    FileMap m_fileContexts;
+    QMutex m_fileMutex;
+    QString m_basePath;
+    qint64 m_maxFileSize;
+};
+
+#endif
+
+// ==================== 4. 主控制器模块 ====================
+// main_controller.h
+#ifndef MAIN_CONTROLLER_H
+#define MAIN_CONTROLLER_H
+
+#include <QObject>
+#include <QThread>
+#include "core_types.h"
+
+// 前向声明
+class UdpReceiver;
+class DataProcessor; 
+class FileWriter;
+
+/*
+开发者思考：
+"主控制器负责：
+1. 创建和管理各个模块
+2. 管理线程
+3. 连接信号槽
+4. 提供统一的对外接口"
+*/
+class MainController : public QObject
+{
+    Q_OBJECT
+public:
+    explicit MainController(QObject *parent = nullptr);
+    ~MainController();
+    
+    // 开发者思考："系统控制接口"
+    bool startSystem(const SystemConfig &config);
+    void stopSystem();
+    bool isRunning() const;
+    
+    // 开发者思考："给UI提供的查询接口"
+    QList<DeviceInfo*> getDeviceList();
+    int getOnlineDeviceCount();
+
+signals:
+    // 开发者思考："转发各模块的重要信号给UI"
+    void newLogEntry(const LogEntry &entry);
+    void deviceStatusChanged(int deviceId, bool isOnline);
+    void systemError(const QString &error);
+
+private slots:
+    // 开发者思考："处理各模块的错误"
+    void handleModuleError(const QString &error);
+
+private:
+    // 开发者思考："模块管理"
+    void initializeModules();
+    void connectModules();
+    void moveModulesToThreads();
+    void cleanupModules();
+    
+    // 各功能模块
+    UdpReceiver *m_udpReceiver;
+    DataProcessor *m_dataProcessor;
+    FileWriter *m_fileWriter;
+    
+    // 线程管理
+    QThread *m_networkThread;
+    QThread *m_processingThread;
+    QThread *m_storageThread;
+    
+    SystemConfig m_config;
+    bool m_isRunning;
+};
+
+#endif
+
+// ==================== 5. UI主窗口（可选） ====================
+// main_window.h
+#ifndef MAIN_WINDOW_H  
+#define MAIN_WINDOW_H
+
+#include <QMainWindow>
+#include <QTextEdit>
+#include <QLabel>
+#include <QListWidget>
+#include "core_types.h"
+
+class MainController;
+
+/*
+开发者思考：
+"UI负责：
+1. 显示实时日志
+2. 显示设备状态
+3. 提供系统控制
+4. 配置参数设置"
+*/
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+
+private slots:
+    // 开发者思考："响应控制器的信号"
+    void onNewLogEntry(const LogEntry &entry);
+    void onDeviceStatusChanged(int deviceId, bool isOnline);
+    void onSystemError(const QString &error);
+    
+    // 开发者思考："用户操作"
+    void onStartButtonClicked();
+    void onStopButtonClicked();
+
+private:
+    void setupUI();
+    void updateDeviceList();
+    
+    MainController *m_controller;
+    QTextEdit *m_logDisplay;        // 日志显示区
+    QListWidget *m_deviceList;      // 设备列表
+    QLabel *m_statusLabel;          // 状态栏
+};
+
+#endif
+
+// ==================== 开发者设计总结 ====================
+/*
+设计原则总结：
+1. 单一职责：每个类只做一件事
+2. 依赖注入：通过信号槽解耦，避免直接依赖
+3. 线程安全：共享数据用互斥锁保护
+4. 错误处理：每个模块都有错误信号
+5. 可测试性：接口清晰，便于单元测试
+6. 可扩展性：通过枚举和虚函数支持扩展
+
+数据流设计：
+UdpReceiver → DataProcessor → FileWriter
+                  ↓
+             MainController → MainWindow
+*/
+```
+
