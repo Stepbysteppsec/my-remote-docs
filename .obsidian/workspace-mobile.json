@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Bridge.md",
+                "file": "计算机/git 基础知识.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Bridge"
+              "title": "git 基础知识"
             }
           },
           {
@@ -204,8 +204,10 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "b5313c60a18f665c",
+  "active": "1dbf67bfb65973f9",
   "lastOpenFiles": [
+    "structure.md",
+    "计算机/git 基础知识.md",
     "Bridge.md",
     "如何恢复有效期内的会话.md",
     "docker知识.md",
@@ -213,7 +215,6 @@
     "开发计划.md",
     "计算机/cpp知识.md",
     "todolist.md",
-    "structure.md",
     "english learning.md",
     "conflict-files-obsidian-git.md",
     "计算机/BOOST.md",
@@ -234,7 +235,6 @@
     "未来增长点.md",
     "README.md",
     "/Bridge.md",
-    "/todolist.md",
     "B2BUA",
     "摄影/截屏 2025-03-23 下午3.46.06.jpeg",
     "摄影/attachments/截屏 2025-04-26 下午4.05.01.jpeg",
