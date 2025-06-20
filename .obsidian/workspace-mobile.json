@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "计算机/git基础知识.md",
-                "mode": "source",
+                "file": "计算机/架构整洁之道笔记.md",
+                "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "git基础知识"
+              "title": "架构整洁之道笔记"
             }
           },
           {
@@ -206,6 +206,8 @@
   },
   "active": "b5313c60a18f665c",
   "lastOpenFiles": [
+    "计算机/leetcode.md",
+    "计算机/git基础知识.md",
     "计算机/git 基础知识.md",
     "计算机/架构整洁之道笔记.md",
     "架构疑问.md",
@@ -222,10 +224,8 @@
     "conflict-files-obsidian-git.md",
     "计算机/BOOST.md",
     "mac基础知识.md",
-    "计算机/git基础知识.md",
     "计算机/linux操作基础知识.md",
     "计算机/docker知识.md",
-    "计算机/leetcode.md",
     "计算机/attachments/IMG20250616103428.jpg",
     "计算机/attachments/IMG20250613104704.jpg",
     "计算机/attachments",
