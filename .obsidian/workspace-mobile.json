@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "计算机/git 基础知识.md",
+                "file": "计算机/git基础知识.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "git 基础知识"
+              "title": "git基础知识"
             }
           },
           {
@@ -204,10 +204,13 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "1dbf67bfb65973f9",
+  "active": "b5313c60a18f665c",
   "lastOpenFiles": [
-    "structure.md",
     "计算机/git 基础知识.md",
+    "计算机/架构整洁之道笔记.md",
+    "架构疑问.md",
+    "structure.md",
+    "LogTms.md",
     "Bridge.md",
     "如何恢复有效期内的会话.md",
     "docker知识.md",
@@ -229,12 +232,9 @@
     "计算机/cpp thread.md",
     "计算机/vscode/cpp 开发配置.md",
     "Untitled.md",
-    "架构疑问.md",
     "周报.md",
     "计算机/基础知识.md",
     "未来增长点.md",
-    "README.md",
-    "/Bridge.md",
     "B2BUA",
     "摄影/截屏 2025-03-23 下午3.46.06.jpeg",
     "摄影/attachments/截屏 2025-04-26 下午4.05.01.jpeg",

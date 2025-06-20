@@ -599,9 +599,8 @@ private:
     std::set<int> allocated_ports;
 };
 ```
-
-
-
+---
+```
 架构设计第二版：
 //================================================
 // src/protocol/message_types.h - 消息类型定义
@@ -1234,9 +1233,9 @@ private:
     void start_media_threads();
 };
 
-//=============================================================================
+//====================================
 // src/utils/logger.h - 日志系统
-//=============================================================================
+//====================================
 #pragma once
 #include <string>
 #include <fstream>
@@ -1279,4 +1278,6 @@ private:
 #define LOG_INFO(msg) Logger::getInstance().info(msg)
 #define LOG_WARN(msg) Logger::getInstance().warn(msg)
 #define LOG_ERROR(msg) Logger::getInstance().error(msg)
+
+```
 
