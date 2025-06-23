@@ -173,3 +173,8 @@ git config user.name         # 特定配置
 ---
 # 2. 获取远程变更（不会自动合并）
 git fetch origin
+
+
+
+---
+- "Enumerate"在计算机领域的标准翻译就是"枚举"（中文术语）
