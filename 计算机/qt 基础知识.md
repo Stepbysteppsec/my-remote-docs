@@ -326,3 +326,112 @@ socket->connectToHost("example.com", 80); // 连接服务器
   - **客户端** = `QTcpSocket`（连接 + 通信）。  
 
 通过这种设计，Qt 实现了灵活且符合标准的 TCP 网络通信模型。
+
+---
+# Qt动态库程序部署到Win10的完整步骤
+
+## 背景
+- **开发环境**：Win7 + Qt 5.5.1 + MinGW 32位
+- **目标环境**：Win10（无Qt运行时）
+- **目标**：创建可在Win10上独立运行的程序包
+
+## 核心步骤
+
+### 1. 确认Qt类型
+```cmd
+# 检查Qt安装目录，确认是动态版本
+dir C:\Qt\5.5.1\mingw492_32\lib\*.dll
+# 如果有Qt5Core.dll等文件，说明是动态版本
+```
+
+### 2. 编译程序
+```pro
+# .pro文件配置（动态版本）
+QT += core gui network widgets
+TARGET = LogTMS
+TEMPLATE = app
+
+# 删除这些静态编译配置（对动态Qt无效）
+# CONFIG += static
+# CONFIG -= shared  
+# DEFINES += QT_STATICPLUGIN
+```
+
+### 3. 找到windeployqt工具
+```cmd
+# windeployqt位置
+C:\Qt\5.5.1\mingw492_32\bin\windeployqt.exe
+```
+
+### 4. 设置完整的编译环境
+```cmd
+# 进入Qt的bin目录
+cd C:\Qt\5.5.1\mingw492_32\bin
+
+# 设置MinGW编译器路径（关键步骤！）
+set PATH=C:\Qt\Qt5.5.1\Tools\mingw492_32\bin;%PATH%
+
+# 验证编译器是否可找到
+g++.exe --version
+```
+
+### 5. 执行完整部署
+```cmd
+# 在Qt的bin目录下执行（带编译器运行时）
+windeployqt.exe --release --no-translations --compiler-runtime "你的程序完整路径\LogTMS.exe"
+```
+
+### 6. 验证部署结果
+检查程序目录应包含：
+```
+程序目录/
+├── LogTMS.exe
+├── Qt5Core.dll, Qt5Gui.dll, Qt5Network.dll, Qt5Widgets.dll
+├── libgcc_s_dw2-1.dll        ← MinGW运行时
+├── libstdc++-6.dll           ← C++标准库
+├── libwinpthread-1.dll       ← 线程库
+├── libEGL.dll, libGLESv2.dll ← OpenGL库
+├── platforms/qwindows.dll
+├── imageformats/*.dll
+└── bearer/*.dll
+```
+
+## 关键要点
+
+### ✅ 成功标志
+- 文件大小从500KB增加到45-50MB
+- 看到 "Updating libgcc_s_dw2-1.dll" 等信息
+- 程序目录包含所有必需的dll文件
+
+### ❌ 常见错误
+1. **语法错误**：`set PATH-路径` → 应该是 `set PATH=路径`
+2. **路径错误**：分隔符用`/` → 应该用`\`
+3. **遗漏MinGW路径**：导致 "Cannot find GCC installation" 警告
+4. **在错误目录执行**：在QtCreator目录而不是Qt版本目录
+
+### 🎯 最终测试
+把整个程序文件夹复制到Win10电脑，双击exe文件，能正常启动即为成功。
+
+## 一键部署脚本
+```batch
+@echo off
+echo Qt程序部署脚本
+set QTDIR=C:\Qt\5.5.1\mingw492_32
+set MINGW_DIR=C:\Qt\Qt5.5.1\Tools\mingw492_32
+set PATH=%QTDIR%\bin;%MINGW_DIR%\bin;%PATH%
+
+echo 验证环境...
+g++.exe --version
+if errorlevel 1 (
+    echo 错误：找不到MinGW编译器
+    pause
+    exit /b 1
+)
+
+echo 开始部署...
+windeployqt.exe --release --no-translations --compiler-runtime LogTMS.exe
+echo 部署完成！
+pause
+```
+
+**记住**：动态部署的优势是程序包相对较小（45MB），且不需要重新编译Qt，适合快速部署和分发。
