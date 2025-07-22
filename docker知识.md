@@ -442,3 +442,72 @@ docker cp 源路径 目标路径        # 复制文件
 service ssh status             # 检查SSH服务
 netstat -tlnp | grep :22      # 检查端口监听
 ```
+
+
+---
+### docker 启动记录
+	我判断出这个错误的主要依据来自日志中的**关键错误信息**和你的**Docker操作历史**，结合常见的SSH和容器问题模式。以下是详细分析过程：
+
+---
+
+### **核心判断依据**
+#### 1. **SSH连接失败的明确错误（日志关键行）**
+   ```log
+   kex_exchange_identification: read: Connection reset by peer
+   Connection reset by ::1 port 2222
+   ```
+   - **`Connection reset by peer`**：表明SSH客户端尝试握手时被服务器端强制断开，通常是因为：
+     - SSH服务未运行。
+     - 端口监听失败（服务崩溃或未启动）。
+     - 防火墙/网络策略阻止连接。
+   - **`port 2222`**：指向你映射的容器SSH端口，说明问题出在容器内的SSH服务。
+
+#### 2. **Docker操作历史中的关键线索**
+   - 你通过 `-p 2222:22` 将容器的22端口映射到主机的2222端口，但：
+     ```bash
+     docker run -d --name my_dev_container -p 2222:22 ... /usr/bin/entry.sh
+     ```
+     - **未显式启动SSH服务**：如果`entry.sh`脚本没有包含`service ssh start`或类似命令，容器启动时SSH服务可能不会自动运行。
+   - 你后续尝试的修复命令：
+     ```bash
+     bash -c "/usr/bin/entry.sh && tail -f /dev/null"
+     ```
+     说明你意识到容器会退出（因为`entry.sh`可能未保持进程前台运行），但**仍未解决SSH服务启动问题**。
+
+#### 3. **容器状态与日志的间接证据**
+   - 你的`docker ps -a`输出显示：
+     ```bash
+     Exited (137) 4 minutes ago   # 容器曾异常退出（137通常表示被强制终止）
+     ```
+     结合日志中SSH连接失败，说明容器可能未长期运行SSH服务。
+
+---
+
+### **辅助判断依据**
+1. **常见Docker+SSH问题模式**：
+   - 容器默认不启动SSH服务，需显式配置。
+   - `entry.sh`脚本若未设计为长期运行（如只执行一次性任务），容器会退出导致SSH服务终止。
+
+2. **VS Code Remote-SSH的行为**：
+   - 它依赖容器内持久的SSH服务，如果服务未运行，会直接报`Connection reset`。
+
+3. **你的调试尝试**：
+   - 你曾运行`docker exec -it my_dev_container bash`，说明容器本身可交互，但SSH服务独立于Shell存在。
+
+---
+
+### **排除其他可能的原因**
+1. **非网络问题**：
+   - 错误是`Connection reset`而非`Connection refused`，说明连接已到达容器，但被拒绝（SSH服务异常）。
+   - 如果是防火墙问题，通常会直接超时或无响应。
+
+2. **非认证问题**：
+   - 错误发生在握手初期（`kex_exchange_identification`阶段），尚未到密钥认证步骤。
+
+3. **非端口冲突**：
+   - 如果是主机2222端口被占用，错误会是`Address already in use`，而非`Connection reset`。
+
+---
+
+### **结论**
+综合日志中的SSH握手失败、Docker操作历史中缺失SSH服务启动命令、以及容器状态，**根本原因是容器内的SSH服务未运行**。解决方案是确保容器启动时自动启动SSH服务（如修改`entry.sh`或直接通过`docker run`命令启动）。
