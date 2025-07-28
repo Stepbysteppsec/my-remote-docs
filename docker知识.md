@@ -511,3 +511,225 @@ netstat -tlnp | grep :22      # 检查端口监听
 
 ### **结论**
 综合日志中的SSH握手失败、Docker操作历史中缺失SSH服务启动命令、以及容器状态，**根本原因是容器内的SSH服务未运行**。解决方案是确保容器启动时自动启动SSH服务（如修改`entry.sh`或直接通过`docker run`命令启动）。
+
+
+---
+选择：
+ 独立头文件的问题
+
+  1. 不属于任何线程：MediaStatus枚举本身不"属于"某个线程，它只是一个类型定义
+  2. 编译时包含：头文件在编译时被包含，运行时不存在"访问"问题
+  3. 没有性能损失：枚举值传递是最高效的，比字符串快得多
+
+  但是独立头文件增加了复杂性
+
+  - 需要维护额外的文件
+  - 概念上不如放在自然的位置清晰
+
+  重新评估各方案
+
+  方案1：字符串传递
+
+  status_callback("session123", "CONGESTED");
+  - 性能：需要字符串拷贝和比较，较慢
+  - 类型安全：运行时才能发现拼写错误
+
+  方案2：枚举传递（独立头文件）
+
+  // src/common/media_status.h
+  enum class MediaStatus { IDLE, ACTIVE, CONGESTED, ERROR, TERMINATED };
+
+  status_callback("session123", MediaStatus::CONGESTED);
+  - 性能：最快，枚举值拷贝
+  - 类型安全：编译时检查
+
+  方案3：整数传递
+
+  status_callback("session123", 2); // 2表示CONGESTED
+  - 性能：很快
+  - 可读性：差
+
+  现在我觉得方案1（字符串）可能是最实用的，因为：
+  - 简单直接
+  - 性能损失在可接受范围内（媒体状态变化不频繁）
+  - 易于调试和日志记录
+
+  ---
+src/media/media_worker_thread.cpp                                                                                                                                      │ │
+│ │                                                                                                                                                                        │ │
+│ │   162            // 运行io_service事件循环                                                                                                                             │ │
+│ │   163            while (running.load()) {                                                                                                                              │ │
+│ │   164                try {                                                                                                                                             │ │
+│ │   165 -                  // 运行一段时间的事件循环                                                                                                                     │ │
+│ │   166 -                  io_service.run_for(std::chrono::milliseconds(100));                                                                                           │ │
+│ │   165 +                  // 使用poll_one代替run_for，实现非阻塞处理                                                                                                    │ │
+│ │   166 +                  io_service.poll_one();                                                                                                                        │ │
+│ │   167                                                                                                                                                                  │ │
+│ │   168 +                  // 短暂休眠，避免过度占用CPU                                                                                                                  │ │
+│ │   169 +                  std::this_thread::sleep_for(std::chrono::milliseconds(1));                                                                                    │ │
+│ │   170 +                                                                                                                                                                │ │
+│ │   171                    // 重新启动io_service以便下次循环                                                                                                             │ │
+│ │   172                    if (io_service.stopped()) {                                                                                                                   │ │
+│ │   173 -                      io_service.restart();                                                                                                                     │ │
+│ │   173 +                      io_service.reset();                                                                                                                       │ │
+│ │   174                    }                                                                                                                                             │ │
+│ │   175                                                                                                                                                                  │ │
+│ │   176                } catch (const std::exception& e) {        
+---
+---
+好的！**Boost.Asio** 是 C++ 中用于网络和异步 I/O 编程的强大库，广泛应用于高性能服务器、游戏引擎等场景。以下是系统化的学习路径和核心知识，从基础到实践逐步深入：
+
+---
+
+### **一、Boost.Asio 的核心概念**
+#### 1. **异步 vs 同步 I/O**
+- **同步 I/O**：操作阻塞当前线程直到完成（如 `socket.read()` 会一直等待数据到达）。
+- **异步 I/O**：操作提交后立即返回，完成后通过回调通知（不阻塞线程，适合高并发）。
+
+#### 2. **核心组件**
+| 组件                | 作用                                                                 |
+|---------------------|----------------------------------------------------------------------|
+| `io_context`        | 异步调度引擎，管理所有 I/O 操作和回调                                 |
+| `socket`            | 网络通信端点（TCP/UDP）                                              |
+| `resolver`          | 域名解析（如将 `www.example.com` 转为 IP）                           |
+| `deadline_timer`    | 定时器，用于延迟或周期性任务                                          |
+| `strand`            | 保证回调顺序执行的调度器（避免多线程竞争）                             |
+
+---
+
+### **二、基础示例：从同步到异步**
+#### 1. **同步 TCP 客户端**
+```cpp
+#include <boost/asio.hpp>
+using namespace boost::asio;
+
+int main() {
+    io_context io_ctx;
+    ip::tcp::socket socket(io_ctx);
+
+    // 同步连接和读写
+    socket.connect(ip::tcp::endpoint(
+        ip::address::from_string("127.0.0.1"), 8080));
+    write(socket, buffer("Hello, Server!"));
+    
+    char buf[1024];
+    size_t len = socket.read_some(buffer(buf));
+    std::cout << "Received: " << std::string(buf, len) << std::endl;
+}
+```
+
+#### 2. **异步 TCP 服务端**
+```cpp
+#include <boost/asio.hpp>
+using namespace boost::asio;
+
+class Server {
+public:
+    Server(io_context& io_ctx) : acceptor_(io_ctx, ip::tcp::endpoint(ip::tcp::v4(), 8080)) {
+        accept_connection();
+    }
+
+private:
+    void accept_connection() {
+        auto socket = std::make_shared<ip::tcp::socket>(acceptor_.get_executor());
+        acceptor_.async_accept(*socket, [this, socket](boost::system::error_code ec) {
+            if (!ec) {
+                async_read(*socket, buffer(buf_), 
+                    [socket](auto ec, auto len) { /* 处理数据 */ });
+            }
+            accept_connection(); // 继续接受新连接
+        });
+    }
+
+    ip::tcp::acceptor acceptor_;
+    std::array<char, 1024> buf_;
+};
+```
+
+---
+
+### **三、关键机制详解**
+#### 1. **`io_context` 事件循环**
+- **`run()`**：阻塞等待所有异步操作完成。
+- **`poll()`**：非阻塞执行就绪的回调。
+- **`post()`**：提交一个非 I/O 任务到事件循环。
+
+#### 2. **异步操作链**
+```cpp
+// 异步写 → 异步读 → 处理
+async_write(socket, buffer("Ping"), [&](auto ec, auto) {
+    async_read(socket, buffer(buf_), [](auto ec, auto len) {
+        std::cout << "Received: " << std::string(buf_.data(), len);
+    }
+});
+```
+
+#### 3. **多线程安全**
+- 多线程调用 `io_context::run()` 可提升性能。
+- 用 `strand` 保证回调顺序：
+  ```cpp
+  auto strand = make_strand(io_ctx);
+  post(strand, [] { /* 线程安全的任务 */ });
+  ```
+
+---
+
+### **四、常见应用场景**
+#### 1. **高并发服务器**
+- 使用 `async_accept` + `async_read`/`async_write` 处理数千连接。
+- 配合线程池：
+  ```cpp
+  std::vector<std::thread> threads;
+  for (int i = 0; i < 4; ++i) {
+      threads.emplace_back([&io_ctx] { io_ctx.run(); });
+  }
+  ```
+
+#### 2. **UDP 广播**
+```cpp
+ip::udp::socket socket(io_ctx, ip::udp::v4());
+socket.set_option(ip::udp::socket::broadcast(true));
+socket.send_to(buffer("Broadcast"), ip::udp::endpoint(ip::address_v4::broadcast(), 8888));
+```
+
+#### 3. **定时任务**
+```cpp
+deadline_timer timer(io_ctx, boost::posix_time::seconds(1));
+timer.async_wait([](auto ec) {
+    std::cout << "1秒后执行" << std::endl;
+});
+```
+
+---
+
+### **五、学习资源推荐**
+1. **官方文档**：  
+   [Boost.Asio 官方文档](https://www.boost.org/doc/libs/master/doc/html/boost_asio.html)
+2. **书籍**：  
+   - *Boost.Asio C++ Network Programming* (by John Torjo)
+3. **实践项目**：  
+   - 实现一个简易 HTTP 服务器。
+   - 写一个多线程聊天程序。
+
+---
+
+### **六、调试技巧**
+- **打印错误码**：
+  ```cpp
+  socket.async_connect(endpoint, [](const boost::system::error_code& ec) {
+      if (ec) std::cerr << "Error: " << ec.message() << std::endl;
+  });
+  ```
+- **日志跟踪**：  
+  编译时定义宏 `BOOST_ASIO_ENABLE_HANDLER_TRACKING`，可生成回调流程图。
+
+---
+
+### **七、总结**
+- **核心**：理解 `io_context` 的调度机制和异步操作链。
+- **关键点**：  
+  - 异步操作通过回调处理结果。
+  - 多线程需用 `strand` 或锁保证安全。
+- **进阶**：学习协程（C++20 的 `co_await` 与 Asio 结合）。
+
+通过实际项目练习（如实现一个 Echo Server），你会快速掌握 Boost.Asio 的精髓！

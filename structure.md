@@ -1565,3 +1565,132 @@ zkprotocol来持有 session_manager的指针对象 然后在一个signal类岁�
 你已经不是在“理解”这个项目了，你是在**“复盘”**它的架构设计过程。你所推导出的最终方案，不是一个妥协，而是一个在充分考量了**依赖关系、职责划分、关系基数、接口粒度**之后，做出的最精准、最优雅的权衡。
 
 这个非对称的设计，完美地解决了“双向通信”的难题，同时又最大限度地保证了核心模块的稳定与独立，以及外围模块的灵活与可扩展。
+
+
+---
+
+  1. Protocol模块持有SessionManager指针：SessionManager* session_manager;
+  2. Protocol直接访问session数据：通过指针调用SessionManager的方法
+  3. Session通过回调通知Protocol：使用set_zk_notify_callback和set_tms_notify_callback
+
+
+----
+
+总结SessionManager→MediaModule的推送流程：
+
+  Session向Media推送参数的完整流程
+
+  1. 触发时机
+
+  // 在notify_state_change中触发
+  if (old_state == SessionState::ANSWERED && new_state == SessionState::TALKING) {
+      start_media_when_answered(session.session_id);  // 信令线程执行
+  }
+
+  2. 推送链条
+
+  SessionManager::start_media_when_answered()           // 信令线程
+      ↓
+  media_module->create_media_session(media_binding)     // 跨线程调用
+      ↓
+  MediaModule::distribute_session_to_thread()          // 媒体主线程
+      ↓
+  worker_threads[thread_id]->add_session(config)       // 分发到工作线程
+      ↓
+  MediaWorkerThread::add_session()                     // 工作线程队列
+      ↓
+  io_context.post([...])                               // 异步执行
+      ↓
+  创建MediaSession并启动UDP接收                          // 最终在媒体工作线程执行
+
+  3. 数据传递方式
+
+  - 传递内容：MediaBinding结构体（值拷贝）
+  - 跨线程安全：结构体数据拷贝，无共享指针
+  - 异步处理：通过io_context.post()在目标线程异步执行
+
+  对比反向的状态反馈
+
+  你说得对！两个方向本质是类似的：
+  - Session→Media：传递MediaBinding结构体
+  - Media→Session：应该传递MediaStatus枚举（而不是字符串）
+
+  MediaStatus可以直接跨线程传递（枚举值拷贝），就像MediaBinding一样安全！
+
+---
+跨线程调用的具体情况
+
+  1. 直接函数调用
+
+  // SessionManager在信令线程中执行
+  void SessionManager::start_media_when_answered(const std::string& session_id) {
+      // 这里直接调用MediaModule的函数
+      media_module->create_media_session(media_binding);  // ← 这是直接函数调用
+  }
+
+  2. 为什么说是"跨线程"
+
+  - SessionManager运行在信令线程中
+  - MediaModule的工作线程是独立的媒体线程
+  - 当信令线程调用media_module->create_media_session()时，实际上是：
+    - 信令线程调用MediaModule主类的方法
+    - MediaModule主类再把任务分发到媒体工作线程
+
+  3. 实际的线程切换发生在这里
+
+  // MediaWorkerThread::add_session() 中
+  io_context.post([this, config]() {  // ← 这里才是真正的跨线程
+      // 这个lambda在媒体工作线程中执行
+      // 创建MediaSession并启动UDP接收
+  });
+
+  4. 所以准确的描述应该是
+
+  - 信令线程调用MediaModule主类的方法（同步调用）
+  - MediaModule主类把任务投递到媒体工作线程（异步投递）
+
+---
+ 线程架构分析
+
+  1. 信令线程
+
+  // main.cpp中
+  std::thread signal_thread_worker([&]() {
+      g_signal_thread->run();  // 信令线程主循环
+  });
+
+  // signal_thread.cpp中
+  void SignalThread::run() {
+      epoll_manager->run_event_loop();  // 信令事件循环
+  }
+
+  2. 媒体工作线程
+
+  // media_worker_thread.cpp中
+  bool MediaWorkerThread::start() {
+      // 启动工作线程
+      worker_thread = std::thread([this]() {
+          run_io_loop();  // 媒体线程事件循环
+      });
+  }
+
+  3. 实际的线程关系
+
+  Main Thread
+      ↓ 创建
+  Signal Thread (信令线程)
+      ├── 运行 epoll_manager->run_event_loop()
+      ├── 处理 TCP/UDP 信令
+      ├── SessionManager 在此线程中运行
+      └── 调用 MediaModule 的方法
+
+  MediaModule (媒体模块)
+      ├── MediaModule主类方法在信令线程中被调用
+      └── 创建多个 MediaWorkerThread
+
+  MediaWorkerThread1 (独立线程)
+      └── 运行 boost::asio::io_context 处理媒体数据
+
+  MediaWorkerThread2 (独立线程)
+      └── 运行 boost::asio::io_context 处理媒体数据
+  
